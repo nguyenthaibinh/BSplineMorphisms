@@ -1,29 +1,5 @@
-%% This is file `elsarticle-template-1-num.tex',
-%%
-%% Copyright 2009 Elsevier Ltd
-%%
-%% This file is part of the 'Elsarticle Bundle'.
-%% ---------------------------------------------
-%%
-%% It may be distributed under the conditions of the LaTeX Project Public
-%% License, either version 1.2 of this license or (at your option) any
-%% later version.  The latest version of this license is in
-%%    http://www.latex-project.org/lppl.txt
-%% and version 1.2 or later is part of all distributions of LaTeX
-%% version 1999/12/01 or later.
-%%
-%% The list of all files belonging to the 'Elsarticle Bundle' is
-%% given in the file `manifest.txt'.
-%%
-%% Template article for Elsevier's document class `elsarticle'
-%% with numbered style bibliographic references
-%%
-%% $Id: elsarticle-template-1-num.tex 149 2009-10-08 05:01:15Z rishi $
-%% $URL: http://lenova.river-valley.com/svn/elsbst/trunk/elsarticle-template-1-num.tex $
-%%
-
 %\documentclass[preprint,authoryear,review,12pt]{elsarticle}
-\documentclass[final,5p,times,twocolumn]{elsarticle}
+\documentclass{frontiersSCNS}
 
 %% Use the option review to obtain double line spacing
 %% \documentclass[preprint,review,12pt]{elsarticle}
@@ -138,57 +114,86 @@
 }
 
 
-\journal{Medical Image Analysis}
+\copyrightyear{}
+\pubyear{}
+
+\def\journal{Neuroscience}%%% write here for which journal %%%
+\def\DOI{}
+\def\articleType{Methods}
+\def\keyFont{\fontsize{8}{11}\helveticabold }
+\def\firstAuthorLast{Tustison {et~al.}} %use et al only if is more than 1 author
+\def\Authors{Nicholas J. Tustison\,$^{1,*}$ and Brian A. Avants\,$^{2}$
+ }
+% Affiliations should be keyed to the author's name with superscript numbers and be listed as follows: Laboratory, Institute, Department, Organization, City, State abbreviation (USA, Canada, Australia), and Country (without detailed address information such as city zip codes or street names).
+% If one of the authors has a change of address, list the new address below the correspondence details using a superscript symbol and use the same symbol to indicate the author in the author list.
+\def\Address{$^{1}$University of Virginia, Department of Radiology and Medical Imaging, Charlottesville, VA, USA \\
+$^{2}$Penn Image Computing and Science Laboratory, University of Pennsylvania, Department of Radiology, Philadelphia, PA, USA }
+% The Corresponding Author should be marked with an asterisk
+% Provide the exact contact address (this time including street name and city zip code) and email of the corresponding author
+\def\corrAuthor{Nick Tustison}
+\def\corrAddress{University of Virginia, Department of Radiology and Medical Imaging,  480 Ray C Hunt Drive, Charlottesville, VA, 22903}
+\def\corrEmail{ntustison@virginia.edu}
+
+% \color{FrontiersColor} Is the color used in the Journal name, in the title, and the names of the sections
+
 
 \begin{document}
+\onecolumn
+\firstpage{1}
 
+\title[Explicit B-spline Regularization]{Explicit B-spline Regularization in Diffeomorphic Image Registration}
+\author[\firstAuthorLast ]{\Authors}
+\address{}
+\correspondance{}
+\editor{}
+\topic{}
 
-\begin{frontmatter}
-
-\title{Explicit B-spline Regularization in Diffeomorphic Image Registration}
-
-
-
-\author[label1]{Nicholas J.~Tustison\fnref{label0}}
-%  \ead{ntustison@virginia.edu}
-  \fntext[label0]{\scriptsize Corresponding author:  PO Box 801339, Charlottesville, VA 22908; T:  434-924-7730; email address:  ntustison@virginia.edu }
-\author[label2]{Brian B.~Avants}
-
-\address[label1]{Department of Radiology and Medical Imaging, University of Virginia, Charlottesville, VA}
-\address[label2]{Penn Image Computing and Science Laboratory, Department of Radiology, University of Pennsylvania, Philadelphia, PA}
-
-
-
-%\maketitle
+\maketitle
 
 %\linenumbers
 
 
 \begin{abstract}
-Important contributions in the evolution of image registration algorithms include those 
-in which the correspondence relationship is characterized by diffeomorphic constraints.
-The  popularity of these diffeomorphic image registration methods is due largely to their 
-topological properties and success in providing solutions to small and large deformation 
+Important methodological developments in the evolution of image registration algorithms include those 
+in which the correspondence relationship is characterized by diffeomorphisms.
+The  popularity of these approaches is due largely to their 
+topological properties and success in providing biologically plausible 
+solutions to small and large deformation 
 estimation problems. Variants of diffeomorphic algorithms include those characterized by 
-time-varying velocity fields, constant velocity fields, and symmetrical considerations. 
-To enforce transform plausibility, regularization of the velocity field is usually enforced 
-either implicitly through penalization of the Laplacian or through explicit Gaussian smoothing.
-In this work, we demonstrate that B-splines provide a suitable alternative for regularization 
-and provide a new “flavor” of diffeomorphic image registration solutions.  This is showcased
-by an open source, well-vetted implementation of three popular diffeomorphic variants available
-through the Insight Toolkit ITK and the Advanced Normalization Tools (ANTs) repository.  
-Evaluation is also performed using publicly available brain data used in the MICCAI 
-2012 brain atlas labeling challenge.
+time-varying and constant velocity fields, and symmetrical considerations. 
+Prior information in the form of regularization is used to enforce transform plausibility taking the form of physics-based constraints or through some approximation thereof, e.g. Gaussian smoothing (a la Thirion's Demons \citep{thirion1998}).  In the context of the original Demons' framework, the traditional free-form deformation method can be viewed as a variant in which explicit regularization is achieved through the B-spline basis functions.  
+This characterization can be used to provide alternative ``flavors'' of diffeomorphic image registration solutions with several advantages which we describe in this work.  Implementation is open source and available through the Insight Toolkit and our Advanced Normalization Tools (ANTs) repository.  A thorough evaluation with the well-known SyN algorithm \citep{avants2008}, implemented within the same framework, and its B-spline analog is performed using open data and open source evaluation tools.
+\tiny
+\keyFont{ \section{Keywords:} 
+open science best practices comparison reproducibility software }
 \end{abstract}
 
-\begin{keyword}
-%% keywords here, in the form: keyword \sep keyword
-\end{keyword}
 
-\end{frontmatter}
+
+
+
+
+
+%\begin{itemize}
+%  \item We should trace the use of explicit regularization from 
+%  \item The advantage is not the parameterization per se (contra Tom) but the other 
+%  benefits listed (Vercuraten, Non-parametric Diffeomorphic Image Registration with the Demons Algorithm).
+%  \item This paper provides the link between traditional B-spline approaches and other
+%  approaches, i.e. Gaussian smoothing, Demons, 
+%  \item The ability to weight the boundaries provides a natural way of enforcing Dirichlet boundary conditions which is consistent with the geometric (i.e. B-spline) modeling. (Cahill, SPIE 2012).
+%  \item Fluid vs. Elastic B-spline registration algorithms
+%  \item Fitting a continuous object (as opposed to the discrete gaussian which has no
+%        continuity nor does convolution using FFT provide continuity constraints).
+%  \item Fitting routine is parallelized for fast sampling as is sampling to go from continuous object to sampled b-spline object.
+%  \item Everything is open-source in ANTs and ITK.
+%  \item Also, we should talk about how B-spline SyN works really well for large smoothing  but Gaussian SyN does not.
+%\end{itemize}
 %
 %
-\newpage
+%Also talk about fixed boundary conditions in the context of Nathan Cahill, SPIE 2012.
+%
+
+
 
 
 %% MSC codes here, in the form: \MSC code \sep code
@@ -204,24 +209,65 @@ Evaluation is also performed using publicly available brain data used in the MIC
 \section{Introduction}
 %State the objectives of the work and provide an adequate background, avoiding a detailed literature survey or a summary of the results.
 
-Significant algorithmic developments characterizing modern intensity-based
-image registration research include the B-spline parameterized approach
-(so called {\em free-form deformation}) with early contributions 
-including \cite{szeliski1997,thevenaz1998,rueckert1999}.  Amongst the 
-variant extensions, the 
-{\em directly manipulated free-form deformation} approach  \cite{tustison2009} 
- addressed the hemstitching issue associated with steepest descent traversal of
-problematic energy topographies during the course of optimization.
-%caused by the distribution of the uniform 
-%B-spline shape functions over the transformation domain 
+Establishment of anatomical and functional correspondence
+is a crucial step towards insight into certain biological 
+sciences.  Neuroscience research efforts, such as characterizing 
+brain morphology, require accurate and robust methods for
+producing such mappings.  The 
+extensive literature detailing methodology is evidence of the rich history of 
+algorithmic development which continues contemporaneously.
+We highlight several key contributions which are particularly relevant to the work presented.
 
-Other important image registration research
-reflected increased emphasis on topological transformation considerations
-in modeling biological/physical systems where topology is 
-consistent throughout the course of deformation or a 
-homeomorphic relationship is assumed between image domains.
-Methods such as LDDMM \cite{beg2005} optimize time-varying velocity field 
-flows to yield diffeomorphic transformations.  Alternatively, the FFD 
+Free-form deformation (FFD) image registration, preceded by related work for
+geometric modeling \citep{sederberg1986}, originated with such important
+contributions as \cite{szeliski1997,thevenaz1998,rueckert1999}.  Continued 
+development within this early spline-based paradigm produced additional innovations
+such as integrated similarity metrics \citep[e.g.][]{mattes2003}, additional transformation
+constraints \citep[e.g.][]{rohlfing2003}, and open source contributions \citep[e.g.][]{ibanez2005,klein2010,shackleford2010}.
+
+Parallel to this branch of algorithmic progress are the informally 
+denoted ``dense transforms''
+perhaps best exemplified by Thirion's seminal contribution \citep{thirion1998}.
+Relationships with earlier elastic \citep{bajcsy1989,gee1993} and fluid \citep{christensen1996} registration methods are elucidated in 
+the works of \cite{bro-nielsen1996,pennec1999} who observe that
+Gaussian smoothing, characteristic of Demons, of the update or displacement
+field is a greedy approximation for solving the partial differential equations governing
+the physics of an elastic or fluid deformation.  However, the use of such 
+approximations comes with the caveat that physical properties, such as topological
+regularity,
+are no longer guaranteed.
+ 
+It is interesting to note that within this context, traditional FFD algorithms
+can be viewed as a type of fluid-like Demons approach 
+where, rather than produced by Gaussian convolution, smooth fields are produced using B-splines for roughly approximating the solution to the viscous fluid system.  This was hinted at in our earlier work \citep{tustison2009} where we showed that fitting the update field to a B-spline object using a fast approximation routine \citep{tustison2006} is equivalent to a preconditioning of the standard gradient used in gradient descent-based FFD 
+optimization.  Further details can be gleaned from the ITK implementation of this work%
+\footnote{
+http://www.itk.org/Doxygen/html/classitk\_1\_1BSplineSmoothingOnUpdateDisplacementFieldTransform.html
+}
+which permits both B-spline smoothing on the update (``viscous'') and total (``elastic'') 
+displacement fields at each iteration (cf
+analogous Gaussian, i.e. Demons, implementation%
+\footnote{
+http://www.itk.org/Doxygen/html/classitk\_1\_1GaussianSmoothingOnUpdateDisplacementFieldTransform.html
+}).
+
+Continuing from the work of \cite{christensen1996} and subsequent exploration into the mathematical formalisms of diffeomorphisms \citep[e.g.][]{dupuis1998}, 
+the well-known Large Deformation Diffeomorphic Metric Mapping (LDDMM) algorithm  
+was proposed in \cite{Beg2005}.  In contrast to the mapping produced
+by \cite{christensen1996}, LDDMM yields the geodesic solution in the space of diffeomorphisms between two images.  
+
+
+
+%Other important image registration research
+%reflected increased emphasis on topological transformation considerations
+%in modeling biological/physical systems where topology is 
+%consistent throughout the course of deformation or a 
+%homeomorphic relationship is assumed between image domains.
+%Methods such as LDDMM \citep{beg2005} optimize time-varying velocity field 
+%flows to yield diffeomorphic transformations. 
+
+
+Alternatively, the FFD 
 variant reported in \cite{rueckert2006} enforced diffeomorphic transforms
 by concatenating multiple FFD transforms, each of which is constrained
 to describe a one-to-one mapping.  Another FFD registration
@@ -234,47 +280,90 @@ time-varying velocity field characteristic of LDDMM-style algorithms
 is modeled using a 4-D B-spline object (3-D + time).  Integration of 
 the velocity field yields the mapping between parameterized time points.
 
-In this work, we describe our extension to these methods.  Similar to 
-\cite{de-craene2011}, we also use an $N$-D + time B-spline object to 
-represent the characteristic velocity field.  However, we use the 
-directly manipulated free-form deformation optimization formulation to improve 
-convergence during the course of optimization.  This also facilitates
-modeling temporal periodicity and
-the enforcement of stationary boundaries consistent with diffeomorphic
-transforms.
-We also incorporate B-spline mesh multi-resolution capabilities
-for increased control during registration progression.  
-Most importantly, we also describe
-the parallelized algorithmic implementation as open source available through the Insight Toolkit.%
-\footnote{
-http://www.itk.org/
-}
 
-We first describe the methodology by laying out a mathematical description 
-of the various algorithmic elements coupled with implementation details
-where appropriate.  This is followed by an evaluation on publicly available
-brain data. 
+
+
+
+
+%
+%
+%framework developed independently of Demons and LDDMM/DARTEL.
+%But then the FFD people saw how useful the diff. properties were and
+%tried to integrate B-splines into the diff. framework.
+%
+%
+%The early deformable work of 
+%\begin{itemize}
+%  \item xx Early deformable work \cite{broit1981,bajcsy1989}.
+%  \item FFD \cite{Sleziski,Rueckert1989}
+%  \item Christensen's fluid work
+%  \item Optical flow?
+%  \item Fast fluid registration of medical images (Bro-Nielsen and Gramkow).
+%  \item Consistent image registration
+%  \item Demons and Diff demons
+%  \item LDDMM 
+%  \item DARTEL
+%  \item Arno Klein's study
+%\end{itemize}
+%
+%
+%
+%Early work included the elastic deformation
+
+
+%Significant algorithmic developments characterizing modern intensity-based
+%image registration research include the B-spline parameterized approach
+%(so called {\em free-form deformation}) with early contributions 
+%including \cite{szeliski1997,thevenaz1998,rueckert1999}.  Amongst the 
+%variant extensions, the 
+%{\em directly manipulated free-form deformation} approach  \cite{tustison2009} 
+% addressed the hemstitching issue associated with steepest descent traversal of
+%problematic energy topographies during the course of optimization.
+%%caused by the distribution of the uniform 
+%%B-spline shape functions over the transformation domain 
+%
+%
+%In this work, we describe our extension to these methods.  Similar to 
+%\cite{de-craene2011}, we also use an $N$-D + time B-spline object to 
+%represent the characteristic velocity field.  However, we use the 
+%directly manipulated free-form deformation optimization formulation to improve 
+%convergence during the course of optimization.  This also facilitates
+%modeling temporal periodicity and
+%the enforcement of stationary boundaries consistent with diffeomorphic
+%transforms.
+%We also incorporate B-spline mesh multi-resolution capabilities
+%for increased control during registration progression.  
+%Most importantly, we also describe
+%the parallelized algorithmic implementation as open source available through the Insight Toolkit.%
+%\footnote{
+%http://www.itk.org/
+%}
+%
+%We first describe the methodology by laying out a mathematical description 
+%of the various algorithmic elements coupled with implementation details
+%where appropriate.  This is followed by an evaluation on publicly available
+%brain data. 
 
 
 \section{Material and Methods}
 %Provide sufficient detail to allow the work to be reproduced. Methods already published should be indicated by a reference: only relevant modifications should be described.
 
-{\color{red}{\em Remember Brian's suggestion of adding the work where we integrated the velocity field (via the control point lattice) as opposed to integrating the path through the velocity field.}}
-
-
 Three popular algorithms [1,2,3] (and their B-spline analogs) were implemented as part of the recent refactoring of the Insight Toolkit (ITK) [5] and included as part of the Advanced Normalization Tools (ANTs) repository [6].  Thus, all code used for this work is available as open source.   For comparison, the ITK-based, well-vetted SyN algorithm [3], which uses explicit Gaussian regularization, was used to provide the canonical mappings in the MICCAI 2012 multi-atlas labeling challenge [7] between 20 training subjects and 15 testing subjects (140 labeled structures).  Using the exact same parameters, except those specific to the regularization, we produced the analogous B-spline SyN mappings for the same data and compared transformations using the Dice overlap.
+
+\subsection{Public Data}
+
+\subsection{Implementation}
 
 \section{Results}
 %Results should be clear and concise.
 
-Sample label results (with ground truth) are showin in Fig. 1.  Box plots comparing the Dice metrics between the two diffeomorphic registration algorithms are pro-vided in Fig. 1.  A paired Student’s t-test demonstrated that B-spline SyN produced slightly better average overlap ($p < 1e-4$).  
 
-\section{Discussion}
+\section{Discussion and Conclusions}
 %This should explore the significance of the results of the work, not repeat them. A combined Results and Discussion section is often appropriate. Avoid extensive citations and discussion of published literature.
 
 B-spline regularization is easily adapted into the diffeomorphic registration framework and performs comparably to analogous algorithms which we demonstrated in the case of SyN.  Even more importantly, all source code and data used in this work is publicly available for the interested researcher to explore.
 
-\section{Conclusions}
+%\section{Conclusions}
 %The main conclusions of the study may be presented in a short Conclusions section, which may stand alone or form a subsection of a Discussion or Results and Discussion section.
 
 %% The Appendices part is started with the command \appendix;
@@ -294,11 +383,8 @@ B-spline regularization is easily adapted into the diffeomorphic registration fr
 
 %% References with bibTeX database:
 
-\section*{Acknowledgments}
-
-\section*{References}
-
-\bibliographystyle{elsarticle-harv}
+\bibliographystyle{frontiersinSCNS}
+%\bibliographystyle{plain}
 \bibliography{references}
 
 
