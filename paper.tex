@@ -228,19 +228,19 @@ constraints \citep[e.g.][]{rohlfing2003}, and open source contributions \citep[e
 Parallel to this branch of algorithmic progress are the informally 
 denoted ``dense transforms''
 perhaps best exemplified by Thirion's seminal contribution \citep{thirion1998}.
-Relationships with earlier elastic \citep{bajcsy1989,gee1993} and fluid \citep{christensen1996} registration methods are elucidated in 
-the works of \cite{bro-nielsen1996,pennec1999} who observe that
+Relationships with earlier elastic \citep{bajcsy1989,gee1993} and fluid \citep{christensen1996} registration methods are detailed in 
+the works of \cite{bro-nielsen1996} and \cite{pennec1999} who observe that
 Gaussian smoothing, characteristic of Demons, of the update or displacement
 field is a greedy approximation for solving the partial differential equations governing
 the physics of an elastic or fluid deformation.  However, the use of such 
 approximations comes with the caveat that physical properties, such as topological
-regularity,
-are no longer guaranteed.
+regularity, are no longer guaranteed.
  
 It is interesting to note that within this context, traditional FFD algorithms
 can be viewed as a type of fluid-like Demons approach 
-where, rather than produced by Gaussian convolution, smooth fields are produced using B-splines for roughly approximating the solution to the viscous fluid system.  This was hinted at in our earlier work \citep{tustison2009} where we showed that fitting the update field to a B-spline object using a fast approximation routine \citep{tustison2006} is equivalent to a preconditioning of the standard gradient used in gradient descent-based FFD 
-optimization.  Further details can be gleaned from the ITK implementation of this work%
+where, rather than produced by Gaussian convolution, smooth fields are produced using B-splines for roughly approximating the solution to the viscous fluid system.  This was hinted at in our earlier work \citep{tustison2009} where we showed that fitting the update field to a B-spline object using a fast approximation routine \citep{tustison2006} is equivalent to a preconditioning of the standard gradient used in gradient descent-based FFD optimization.  This preconditioning used to reduce the 
+
+Further details can be gleaned from the ITK implementation of this work%
 \footnote{
 http://www.itk.org/Doxygen/html/classitk\_1\_1BSplineSmoothingOnUpdateDisplacementFieldTransform.html
 }
