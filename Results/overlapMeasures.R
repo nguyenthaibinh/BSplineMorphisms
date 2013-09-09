@@ -31,7 +31,8 @@ for( i in 1:length( cohortNames ) )
   plotData <- data.frame( Type = plotLabels, Dice = c( diceSyN, diceBSplineSyN ) )
 
   myPlot <- ggplot( plotData,  aes( x = factor( Type ), y = Dice ) ) +
-            geom_boxplot( aes( fill = Type ) ) +
+            geom_boxplot( aes( fill = Type ), alpha = 0.5 ) +
+  										scale_fill_manual( values = c( "darkred", "navyblue" ), labels = c( "BSplineSyN", "SyN" ) ) +
             ggtitle( cohortNames[i] ) +
             scale_x_discrete( "" )
 
