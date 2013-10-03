@@ -159,13 +159,13 @@ in which the correspondence relationship is characterized by diffeomorphisms.
 The  popularity of these approaches is due largely to their 
 topological properties and success in providing biologically plausible 
 solutions to small and large deformation 
-estimation problems. Variants of diffeomorphic algorithms include those characterized by 
+estimation problems. Popular variants of diffeomorphic algorithms include those characterized by 
 time-varying and constant velocity fields, and symmetrical considerations. 
-Prior information in the form of regularization is used to enforce transform plausibility taking the form of physics-based constraints or through some approximation thereof, e.g. Gaussian smoothing (a la Thirion's Demons \citep{thirion1998}).  In the context of the original Demons' framework, the traditional free-form deformation method can be viewed as a variant in which explicit regularization is achieved through the B-spline basis functions.  
-This characterization can be used to provide alternative ``flavors'' of diffeomorphic image registration solutions with several advantages which we describe in this work.  Implementation is open source and available through the Insight Toolkit and our Advanced Normalization Tools (ANTs) repository.  A thorough evaluation with the well-known SyN algorithm \citep{avants2008}, implemented within the same framework, and its B-spline analog is performed using open data and open source evaluation tools.
+Prior information (i.e. regularization) is used to enforce transform plausibility taking the form of physics-based constraints or through some approximation thereof, e.g. Gaussian smoothing of the vector fields (a la Thirion's Demons \citep{thirion1998}).  In the context of the original Demons' framework, the traditional free-form deformation method can be viewed as a variant in which explicit regularization is achieved through the B-spline basis functions.  
+This characterization can be used to provide alternative B-spline ``flavored'' diffeomorphic image registration solutions with several advantages which we describe in this work.  Implementation is open source and available through the Insight Toolkit and our Advanced Normalization Tools (ANTs) repository.  A thorough comparative evaluation with the well-known SyN algorithm \citep{avants2008}, implemented within the same framework, and its B-spline analog is performed using open data and open source evaluation tools.
 \tiny
 \keyFont{ \section{Keywords:} 
-open science best practices comparison reproducibility software }
+open science, best practices, reproducibility, software }
 \end{abstract}
 
 
@@ -210,7 +210,7 @@ open science best practices comparison reproducibility software }
 %State the objectives of the work and provide an adequate background, avoiding a detailed literature survey or a summary of the results.
 
 Establishment of anatomical and functional correspondence
-is a crucial step towards insight into certain biological 
+is a crucial step towards gaining insight into certain biological 
 sciences.  Neuroscience research efforts, such as characterizing 
 brain morphology, require accurate and robust methods for
 producing such mappings.  The 
@@ -218,12 +218,13 @@ extensive literature detailing methodology is evidence of the rich history of
 algorithmic development which continues contemporaneously.
 We highlight several key contributions which are particularly relevant to the work presented.
 
-Free-form deformation (FFD) image registration, preceded by related work for
-geometric modeling \citep{sederberg1986}, originated with such important
-contributions as \cite{szeliski1997,thevenaz1998,rueckert1999}.  Continued 
-development within this early spline-based paradigm produced additional innovations
-such as integrated similarity metrics \citep[e.g.][]{mattes2003}, additional transformation
-constraints \citep[e.g.][]{rohlfing2003}, and open source contributions \citep[e.g.][]{ibanez2005,klein2010,shackleford2010}.
+Free-form deformation (FFD) image registration, characterized by  regularization based on the B-spline basis functions, has several 
+advantages including ease of algorithmic understanding, 
+good performance, desirable geometric properties, and several available 
+implementations.  Current research was preceded by related work for
+geometric modeling \citep{sederberg1986} and originated with such important
+contributions as \cite{szeliski1997,thevenaz1998,rueckert1999}.  
+Continued development within this early spline-based paradigm produced additional innovations such as integrated similarity metrics \citep[e.g.][]{mattes2003}, additional transformation constraints \citep[e.g.][]{rohlfing2003}, and notable open source implementations \citep[e.g.][]{ibanez2005,klein2010,shackleford2010}.
 
 Parallel to this branch of algorithmic progress are the informally 
 denoted ``dense transforms''
@@ -232,15 +233,15 @@ Relationships with earlier elastic \citep{bajcsy1989,gee1993} and fluid \citep{c
 the works of \cite{bro-nielsen1996} and \cite{pennec1999} who observe that
 Gaussian smoothing, characteristic of Demons, of the update or displacement
 field is a greedy approximation for solving the partial differential equations governing
-the physics of an elastic or fluid deformation.  However, the use of such 
-approximations comes with the caveat that physical properties, such as topological
+the physics of an elastic or fluid deformation, respectively.  However, the use of such 
+approximations entails that physical properties, such as topological
 regularity, are no longer guaranteed.
  
 It is interesting to note that within this context, traditional FFD algorithms
 can be viewed as a type of fluid-like Demons approach 
-where, rather than produced by Gaussian convolution, smooth fields are produced using B-splines for roughly approximating the solution to the viscous fluid system.  This was hinted at in our earlier work \citep{tustison2009} where we showed that fitting the update field to a B-spline object using a fast approximation routine \citep{tustison2006} is equivalent to a preconditioning of the standard gradient used in gradient descent-based FFD optimization.  This preconditioning used to reduce the 
-
-Further details can be gleaned from the ITK implementation of this work%
+where, rather than produced by Gaussian convolution, regularized fields are produced using B-splines for roughly approximating the solution to the viscous fluid system.  This was hinted at in our earlier work \citep{tustison2009} where we showed that fitting the update field to a B-spline object using a fast approximation routine \citep{tustison2006} is equivalent to a preconditioning of the standard gradient used in gradient descent-based FFD optimization.  As mentioned in \cite{tustison2009}, this preconditioning is used to reduce the hemstitching induced by the traditional gradient-based FFD formulation.
+Further details can be gleaned from the ITK implementation of this 
+earlier work%
 \footnote{
 http://www.itk.org/Doxygen/html/classitk\_1\_1BSplineSmoothingOnUpdateDisplacementFieldTransform.html
 }
@@ -254,8 +255,9 @@ http://www.itk.org/Doxygen/html/classitk\_1\_1GaussianSmoothingOnUpdateDisplacem
 Continuing from the work of \cite{christensen1996} and subsequent exploration into the mathematical formalisms of diffeomorphisms \citep[e.g.][]{dupuis1998}, 
 the well-known Large Deformation Diffeomorphic Metric Mapping (LDDMM) algorithm  
 was proposed in \cite{Beg2005}.  In contrast to the mapping produced
-by \cite{christensen1996}, LDDMM yields the geodesic solution in the space of diffeomorphisms between two images.  
-
+by \cite{christensen1996}, LDDMM yields the geodesic solution in the space of diffeomorphisms between two images. Since its introduction, LDDMM has
+inspired much innovation in the image registration literature.  
+Symmetrical considerations in the velocity field parameterization, for example, are discussed in \cite{avants2008} in the context of a cross correlation similarity metric which minimizes the bias of the resulting transformation in selecting the identity of the fixed and moving images.  A greedy version of this algorithm which has proven successful in general application \citep{Klein2009}.
 
 
 %Other important image registration research

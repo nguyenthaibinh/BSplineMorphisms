@@ -20,7 +20,7 @@ my @logFiles = <${inputDirectory}/*syn.o*>;
 my @numberOfIterationsPerLevel = ( 100, 100, 70, 20 );
 
 open( CSV_FILE, ">${outputFile}" );
-print CSV_FILE "WHICH,REGULARIZATION,";
+print CSV_FILE "WHICH,REGULARIZATION,ELAPSED_TIME,";
 for( my $i = 0; $i < @numberOfIterationsPerLevel; $i++ )
   {
   for( my $j = 0; $j < $numberOfIterationsPerLevel[$i]; $j++ )
@@ -36,20 +36,36 @@ for( my $i = 0; $i < @numberOfIterationsPerLevel; $i++ )
       }
     }
   }
+  
+my @whichRegistrations = ();  
 
-for( my $i = 0; $i < @logFiles; $i++ )
+# go backwards to get the latest duplicate (if exists)
+
+for( my $i = @logFiles - 1; $i >= 0; $i-- )
   {
   open( FILE, "<${logFiles[$i]}" );
   my @fileContents = <FILE>;
   close( FILE );
 
+  if( @fileContents == 0 )
+    {
+    print "Bad file:  ${logFiles[$i]}\n";
+    next;
+    }
+
   # Check to see if this particular registration ran to
   # completion successfully.
 
   my @lastLineTokens = split( ': ', $fileContents[-1] );
+  if( @lastLineTokens < 2 )
+    {
+    print "Bad file:  ${logFiles[$i]}\n";
+    next;
+    }
   if( ${lastLineTokens[0]} !~ m/Output\ warped\ image/ )
     {
     print "Bad file:  ${logFiles[$i]}\n";
+    next;
     }
 
   chomp( ${lastLineTokens[1]} );
@@ -60,7 +76,20 @@ for( my $i = 0; $i < @logFiles; $i++ )
     {
     $regularization = 'bsyn';
     }
-  print CSV_FILE "${filename},${regularization},";
+
+  # ensure that there are no duplicates 
+  
+  my $which = "${filename}_${regularization}";
+  
+  if( grep { $_ eq $which } @whichRegistrations )
+    {
+    print "Duplicate entry: $which\n";
+    next;
+    }
+  else
+    {  
+    push( @whichRegistrations, $which );
+    }
 
   # get the iteration index where each level begins
 
@@ -88,7 +117,22 @@ for( my $i = 0; $i < @logFiles; $i++ )
   else
     {
     print "Bad file:  ${logFiles[$i]}\n";
+    next;
     }
+
+  my $timeIndex = scalar( @fileContents ) - 15;
+  my @elapsedTime = split( ': ', $fileContents[$timeIndex] );
+  if( @elapsedTime < 2 )
+    {
+    print "Bad time:  ${logFiles[$i]}\n";
+    next;
+    }
+  chomp( $elapsedTime[1] );  
+
+  # done with checking so now we can print to file.
+  
+  print CSV_FILE "${filename},${regularization},$elapsedTime[1],";
+
 
   # Get all iteration metric values for all levels
 
