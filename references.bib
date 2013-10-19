@@ -2,12 +2,95 @@
 %% http://bibdesk.sourceforge.net/
 
 
-%% Created for Nick Tustison at 2013-10-11 22:59:43 -0400 
+%% Created for Nick Tustison at 2013-10-18 20:12:57 -0400 
 
 
 %% Saved with string encoding Unicode (UTF-8) 
 
 
+
+@inproceedings{bourma2007,
+	Author = {Henri Bouma and Anna Vilanova and Javier Olivan Bescos and Bart M. ter Haar Romeny and Frans A. Gerritsen},
+	Booktitle = {Scale Space and Variational Methods in Computer Vision},
+	Date-Added = {2013-10-19 00:07:50 +0000},
+	Date-Modified = {2013-10-19 00:12:46 +0000},
+	Pages = {406--417},
+	Publisher = {Springer Berlin Heidelberg},
+	Series = {Lecture Notes in Computer Science},
+	Title = {Fast and Accurate {G}aussian Derivatives based on {B}-Splines},
+	Volume = {4485},
+	Year = {2007}}
+
+@article{mcgill1978,
+	Author = {Mc{G}ill, R. and Tukey, J.W. and Larsen, W.A.},
+	Date-Added = {2013-10-18 17:42:18 +0000},
+	Date-Modified = {2013-10-18 17:43:54 +0000},
+	Isi = {A1978EL85500002},
+	Isi-Recid = {33689004},
+	Isi-Ref-Recids = {31709504 33689005 33689006 33689007 33689008 2175115 31709478 31279015},
+	Iso-Source-Abbreviation = {Am Stat},
+	Journal = {American Statistician},
+	Pages = {12--16},
+	Times-Cited = {714},
+	Title = {Variations of Box Plots},
+	Volume = {32},
+	Year = {1978},
+	Bdsk-Url-1 = {http://ws.isiknowledge.com/cps/openurl/service?url_ver=Z39.88-2004&rft_id=info:ut/A1978EL85500002}}
+
+@article{rohlfing2012,
+	Abstract = {The accuracy of nonrigid image registrations is commonly approximated using surrogate measures such as tissue label overlap scores, image similarity, image difference, or transformation inverse consistency error. This paper provides experimental evidence that these measures, even when used in combination, cannot distinguish accurate from inaccurate registrations. To this end, we introduce a "registration" algorithm that generates highly inaccurate image transformations, yet performs extremely well in terms of the surrogate measures. Of the tested criteria, only overlap scores of localized anatomical regions reliably distinguish reasonable from inaccurate registrations, whereas image similarity and tissue overlap do not. We conclude that tissue overlap and image similarity, whether used alone or together, do not provide valid evidence for accurate registrations and should thus not be reported or accepted as such.},
+	Author = {Rohlfing, Torsten},
+	Date-Added = {2013-10-18 17:00:59 +0000},
+	Date-Modified = {2013-10-18 17:01:11 +0000},
+	Doi = {10.1109/TMI.2011.2163944},
+	Journal = {IEEE Trans Med Imaging},
+	Journal-Full = {IEEE transactions on medical imaging},
+	Mesh = {Algorithms; Biological Markers; Brain; Humans; Image Enhancement; Image Interpretation, Computer-Assisted; Magnetic Resonance Imaging; Pattern Recognition, Automated; Reproducibility of Results; Sensitivity and Specificity; Subtraction Technique},
+	Month = {Feb},
+	Number = {2},
+	Pages = {153-63},
+	Pmc = {PMC3274625},
+	Pmid = {21827972},
+	Pst = {ppublish},
+	Title = {Image similarity and tissue overlaps as surrogates for image registration accuracy: widely used but unreliable},
+	Volume = {31},
+	Year = {2012},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1109/TMI.2011.2163944}}
+
+@article{wang2012,
+	Abstract = {Multi-atlas segmentation is an effective approach for automatically labeling objects of interest in biomedical images. In this approach, multiple expert-segmented example images, called \emph{atlases}, are registered to a target image, and deformed atlas segmentations are combined using \emph{label fusion}. Among the proposed label fusion strategies, weighted voting with spatially varying weight distributions derived from atlas-target intensity similarity have been particularly successful. However, one limitation of these strategies is that the weights are computed independently for each atlas, without taking into account the fact that different atlases may produce similar label errors. To address this limitation, we propose a new solution for the label fusion problem, in which weighted voting is formulated in terms of minimizing the total expectation of labeling error, and in which pairwise dependency between atlases is explicitly modeled as the joint probability of two atlases making a segmentation error at a voxel. This probability is approximated using intensity similarity between a pair of atlases and the target image in the neighborhood of each voxel. We validate our method in two medical image segmentation problems: hippocampus segmentation and hippocampus subfield segmentation in magnetic resonance (MR) images. For both problems, we show consistent and significant improvement over label fusion strategies that assign atlas weights independently.},
+	Author = {Wang, Hongzhi and Suh, Jung W and Das, Sandhitsu R and Pluta, John and Craige, Caryne and Yushkevich, Paul A},
+	Date-Added = {2013-10-16 17:20:48 +0000},
+	Date-Modified = {2013-10-16 17:21:00 +0000},
+	Doi = {10.1109/TPAMI.2012.143},
+	Journal = {IEEE Trans Pattern Anal Mach Intell},
+	Journal-Full = {IEEE transactions on pattern analysis and machine intelligence},
+	Month = {Jun},
+	Pmid = {22732662},
+	Pst = {aheadofprint},
+	Title = {Multi-Atlas Segmentation with Joint Label Fusion},
+	Year = {2012},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1109/TPAMI.2012.143}}
+
+@article{avants2010,
+	Abstract = {We evaluate the impact of template choice on template-based segmentation of the hippocampus in epilepsy. Four dataset-specific strategies are quantitatively contrasted: the "closest to average" individual template, the average shape version of the closest to average template, a best appearance template and the best appearance and shape template proposed here and implemented in the open source toolkit Advanced Normalization Tools (ANTS). The cross-correlation similarity metric drives the correspondence model and is used consistently to determine the optimal appearance. Minimum shape distance in the diffeomorphic space determines optimal shape. Our evaluation results show that, with respect to gold-standard manual labeling of hippocampi in epilepsy, optimal shape and appearance template construction outperforms the other strategies for gaining data-derived templates. Our results also show the improvement is most significant on the diseased side and insignificant on the healthy side. Thus, the importance of the template increases when used to study pathology and may be less critical for normal control studies. Furthermore, explicit geometric optimization of the shape component of the unbiased template positively impacts the study of diseased hippocampi.},
+	Author = {Avants, Brian B and Yushkevich, Paul and Pluta, John and Minkoff, David and Korczykowski, Marc and Detre, John and Gee, James C},
+	Date-Added = {2013-10-16 17:18:47 +0000},
+	Date-Modified = {2013-10-16 17:19:40 +0000},
+	Doi = {10.1016/j.neuroimage.2009.09.062},
+	Journal = {Neuroimage},
+	Journal-Full = {NeuroImage},
+	Mesh = {Algorithms; Atlases as Topic; Epilepsy; Hippocampus; Humans; Image Interpretation, Computer-Assisted},
+	Month = {Feb},
+	Number = {3},
+	Pages = {2457-66},
+	Pmc = {PMC2818274},
+	Pmid = {19818860},
+	Pst = {ppublish},
+	Title = {The optimal template effect in hippocampus studies of diseased populations},
+	Volume = {49},
+	Year = {2010},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1016/j.neuroimage.2009.09.062}}
 
 @book{press2007,
 	Author = {Press, William H. and Teukolsky, Saul A. and Vetterling, William T. and Flannery, Brian P.},

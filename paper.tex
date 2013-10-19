@@ -46,7 +46,6 @@
 %% The amsthm package provides extended theorem environments
 % \usepackage{amsthm}
 
- \usepackage{makecell}
 
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
@@ -115,6 +114,7 @@
         }
 }
 
+\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
 
 \copyrightyear{}
 \pubyear{}
@@ -144,7 +144,7 @@ $^{2}$Penn Image Computing and Science Laboratory, University of Pennsylvania, D
 \onecolumn
 \firstpage{1}
 
-\title[Explicit B-spline regularization]{Explicit B-spline regularization in diffeomorphic image registration}
+\title[DMFFD Diffeomorphic Image Registration]{Explicit B-spline regularization in diffeomorphic image registration}
 \author[\firstAuthorLast ]{\Authors}
 \address{}
 \correspondance{}
@@ -295,16 +295,15 @@ time-varying velocity field
 is modeled using a 4-D B-spline object (3-D + time).  Numerical integration of the mapping propagated within the velocity field yields the transform between parameterized time points.
 
 As alluded to earlier, B-spline approximation can also be used
-for regularizing vector fields in an analogous fashion as
+for regularizing time-varying vector fields in an analogous fashion as
 Gaussian convolution.  In this vein and similar to
 \cite{de-craene2011}, we reported in \cite{tustison2012a,tustison2012}
 the use of an $n$-D + time B-spline object to
 represent the characteristic velocity fields.  However, we use the
-directly manipulated free-form deformation formulation to improve the solution convergence and actual results.  This also facilitates modeling
+directly manipulated free-form deformation formulation to improve the solution convergence.  This also facilitates modeling
 temporal periodicity and the enforcement of stationary boundaries.
-
-Both this latter work \citep{tustison2012a} and our earlier work
-\citep{tustison2009} demonstrate that our DMFFD framework is potentially
+Both this work and our earlier work
+\citep{tustison2009} demonstrate that the DMFFD framework is potentially
 applicable to the
 entire gamut of diffeomorphic registration algorithms and provides
 unique ``flavors'' of smoothing possibilities.  However, differences
@@ -316,31 +315,20 @@ approximation or fitting of the signal provided by the DMFFD
 approach.  Also, whereas
 convolution operates entirely within the discrete space,
 the fitting process constructs a continuous object prior
-to any discrete sampling.  Further elaboration on these differences
-are discussed in subsequent sections.
+to any discrete sampling.  
+Interestingly, a similar comparison was made with respect to 
+Gaussian derivative estimation  \citep{bourma2007}.  Although 
+typically estimated using  truncated, discrete Gaussian 
+convolution, an alternative based on 
+B-spline approximation demonstrated superior performance with
+similar computational cost.  
+%Further elaboration on these differences
+%are discussed in subsequent sections.
 
 Variants of three popular diffeomorphic algorithms and their DMFFD analogs
-(LDDMM%
-\footnote{
-\begin{itemize}
-\item http://www.itk.org/Doxygen/html/classitk\_1\_1TimeVaryingVelocityFieldTransform.html
-\item http://www.itk.org/Doxygen/html/classitk\_1\_1TimeVaryingBSplineVelocityFieldTransform.html
-\end{itemize}
-},
-DARTEL%
-\footnote{
-\begin{itemize}
-\item http://www.itk.org/Doxygen/html/classitk\_1\_1GaussianExponentialDiffeomorphicTransform.html
-\item http://www.itk.org/Doxygen/html/classitk\_1\_1BSplineExponentialDiffeomorphicTransform.html
-\end{itemize}
-},
- and SyN%
-\footnote{
-\begin{itemize}
-\item http://www.itk.org/Doxygen/html/classitk\_1\_1SyNImageRegistrationMethod.html
-\item http://www.itk.org/Doxygen/html/classitk\_1\_1BSplineSyNImageRegistrationMethod.html
-\end{itemize}
-})
+(LDDMM,
+DARTEL,
+ and SyN)
 were implemented by the authors
 as part of the recent refactoring of the open source
 Insight Toolkit (ITK) although related work had been
@@ -353,7 +341,7 @@ Given the popularity and excellent performance of the symmetric normalization (S
 its B-spline equivalent which we denote as ``B-spline SyN.''
 Evaluation and comparisons of the respective algorithmic instantiations
 are performed using the \verb#antsRegistration# program found
-in the ANTs repository (also originally developed by the authors \citep{tustison2012}).  This permits a direct algorithmic comparison
+in the ANTs repository (also originally developed by the authors).  This permits a direct algorithmic comparison
 as potential sources for implementation bias have been removed \citep{tustison2013}.  Additionally, in the spirit of open science,
 all text, figures, and
 scripts to reproduce the results contained in this work are publicly available online.%
@@ -471,11 +459,12 @@ endpoints, i.e. the $v_i(\mathbf{x},t)$ are sampled at $t \in \{0,0.5,1\}$
 implying simultaneous storage of only four transform vector fields
 $\phi_1(\mathbf{x})$,
 $\phi_1^{-1}(\mathbf{x})$, $\phi_2(\mathbf{x})$, and $\phi_2^{-1}(\mathbf{x})$
-(cf Figure \ref{fig:syn}).  The algorithmic steps are briefly sketched
+(cf Figure \ref{fig:syn}).  Since the greedy SyN framework is the focus of the evaluation,
+the algorithmic steps are briefly sketched
 in Algorithm \ref{alg:syn}.
 
 \begin{algorithm}
-\caption{SyN algorithmic overview}
+\caption{Greedy SyN algorithm}
 \label{alg:syn}
 \begin{algorithmic}
 \State $\phi_i \leftarrow \mathbf{Id}$, $\phi_i^{-1} \leftarrow \mathbf{Id}$
@@ -500,87 +489,240 @@ in Algorithm \ref{alg:syn}.
 Although several velocity field regularization
 operators have been proposed, many algorithmic instantiations
 default to Gaussian smoothing due to its simplicity both in implementation
-and complexity terms.
-Extending the work presented in \cite{tustison2009,tustison2012},
-the DMFFD approach is a viable and practical alternative
-for explicit regularization in diffeomorphic image registration.
+and complexity terms.  A viable and practical alternative is the DMFFD 
+approach based on B-splines for explicit regularization of vector fields.
+As presented in \cite{tustison2009}, given the similarity metric
+$\Pi_{\sim}$, the $d$-dimensional update field (i.e. preconditioned
+gradient field), $\delta v_{i_1,\ldots,i_d}$, is calculated from
+\begin{align}
+\label{eq:dmffd}
+  \delta v_{i_1,\ldots,i_d} = \frac{ \sum_{c=1}^{N_{\Omega}} \left( \frac{\partial \Pi_\sim}{\partial \mathbf{x}} \right)_c \prod_{j=1}^d B_{i_j}(x_j^c)  
+  \cdot \frac{\prod_{j=1}^d B_{i_j}^2 (x_j^c)}
+  {\sum_{k_1=1}^{r+1}\ldots\sum_{k_d=1}^{r+1} 
+  \prod_{j=1}^d B_{k_j}^2 (x_j^c)} }
+  {\sum_{c=1}^{N_{\Omega}} \prod_{j=1}^d B_{i_j}^2 (x_j^c)}
+\end{align}
+where the set of $B(\cdot)$ are the univariate B-spline basis functions for
+separately modulating regularity in the solution for each parametric dimension,
+$N_\Omega$ is the number of voxels in the reference image domain,
+$r$ is the spline order in all dimensions,%
+\footnote{
+In terms of implementation spline orders can be specified separately for each dimension but, for simplicity,
+we only specify a single spline order.
+}
+and $\frac{\partial \Pi_\sim}{\partial \mathbf{x}}$ is the spatial 
+similarity metric gradient indexed by $c$.
 
-As we mentioned previously, it has been shown that the preconditioned
-gradient of the B-spline object is equivalent to a B-spline approximation
-smoothing operation on the spatial derivative of the similarity metric
-gradient \citep{tustison2009}. In the case of
-$d$-dimensional image registration, the time-dependent velocity field can be
-represented
+Similarly, in the case of $d$-dimensional time-parameterized 
+diffeomorphic image registration, 
+the time-dependent velocity field can be represented
 as a $(d + 1)$-dimensional B-spline object
 \begin{align}
 v(\mathbf{x}, t) = \sum_{i_1=1}^{X_1}\ldots\sum_{i_d=1}^{X_d}\sum_{i_t=1}^T v_{i_1,\ldots,i_d,i_t} B_{i_t}(t) \prod_{j=1}^d B_{i_j}(x_j)
 \end{align}
 where $v_{i_1,\ldots,i_d,i_t}$ is a $(d+1)$-dimensional control point lattice
-characterizing the velocity field and $B(\cdot)$ are the univariate B-spline
-basis functions separately modulating regularity in the solution for each parametric dimension.  The preconditioned gradient analog for updating the velocity
-field is as follows \citep{tustison2012}:
+characterizing the velocity field.  The preconditioned gradient analog of
+Equation (\ref{eq:dmffd}) for updating the time-varying velocity field control point lattice
+is as follows:
 $\delta v_{i_1,\ldots,i_d,i_t}$, given the similarity metric, $\Pi_\sim$,
 \begin{align}
-\label{eq:dmffd}
+\label{eq:tvdmffd}
   \delta v_{i_1,\ldots,i_d,i_t} &= \left( \sum_{c=1}^{N_{\Omega} \times N_t} \left( \frac{\partial \Pi_\sim}{\partial \mathbf{x}} \right)_c B_{i_t}(t^c)\prod_{j=1}^d B_{i_j}(x_j^c)  \right. \nonumber \\
   &\cdot \left. \frac{B_{i_t}^2(t^c) \prod_{j=1}^d B_{i_j}^2 (x_j^c)}
   {\sum_{k_1=1}^{r+1}\ldots\sum_{k_d=1}^{r+1} \sum_{k_t=1}^{r+1} B_{k_t}^2(t^c)
   \prod_{j=1}^d B_{k_j}^2 (x_j^c)} \right) \nonumber \\
   &\cdot\left({\sum_{c=1}^{N_{\Omega}\times N_t}B_{i_t}^2(t^c) \prod_{j=1}^d B_{i_j}^2 (x_j^c)} \right) ^{-1}
 \end{align}
-which is a slight modification of Eqn. (21) in \cite{tustison2009}
 which takes into account the temporal locations of the
 dense gradient field sampled in $t \in [0,1]$. $N_t$ and $N_\Omega$ are the number
 of time point samples and the number of voxels in the reference image domain, respectively.
-$r$ is the spline order in all dimensions%
 \footnote{
-In terms of implementation spline orders can be specified separately for each dimension but, for simplicity,
-we only specify a single spline order.
-}
-and $c$ indexes the spatio-temporal dense metric gradient sample.
 Additionally, in \cite{tustison2006} it was shown that one could associate each
 a sample, $\left( \frac{\partial \Pi}{\partial \mathbf{x}}\right)_c$ with a confidence
-weighting.  Thus, in order to enforce stationary boundaries, we
+weighting.  Thus, in order to enforce stationary boundaries for all described
+DMFFD-based diffeomorphic algorithms, we
 assign image boundary metric gradients a value of zero with a corresponding
 large confidence value.
+}
 
+For regularization of constant velocity fields, e.g. SyN or DARTEL, updating the 
+field is performed using Equation (\ref{eq:dmffd}).  In the case B-spline SyN, 
+this applies to the smoothing operators $S_{v}$ and $S_{\phi}$ in Algorithm \ref{alg:syn}
+although best performance (at least for the data described in this work) typically
+employs no smoothing on the total transform field, i.e. $S_\phi$ is such that $S_\phi( \phi_i^n ) = \phi_i^n$.
 
 
 
 \subsection{Implementation}
 
-Although various methods exist for solving Eqns. (\ref{eq:ode}) and (\ref{eq:integral}),
-we use $4^{th}$-order Runge-Kutta, i.e.
-\begin{align}
-  \phi_{n+1} &= \phi_{n} + \frac{1}{6}\left( k_1 + 2k_2 + 2k_3 + k_4 \right) \\
-  t_{n+1} &= t_{n} + \Delta t \\
-  \phi_0 &= \phi(t_0)
-\end{align}
-where
-\begin{align}
-  k_1 &= v\left( \phi_{n}, t_{n} \right)\Delta t \\
-  k_2 &= v\left( \phi_{n} + \frac{k_1}{2}, t_{n} + \frac{\Delta t}{2} \right)\Delta t \\
-  k_3 &= v\left( \phi_{n} + \frac{k_2}{2}, t_{n} + \frac{\Delta t}{2} \right)\Delta t \\
-  k_4 &= v\left( \phi_{n} + k_3, t_{n} + \Delta t \right)\Delta t
-\end{align}
-which provides a more stable and reliable alternative than other numerical
-methods \citep{press2007}.
+Three diffeomorphic algorithms described previously utilizing Gaussian convolution smoothing and their DMFFD counterparts are available through the following classes in the ITK repository: 
+\begin{itemize}
+  \item {\bf LDDMM:}
+    \begin{itemize}
+      \item {\tt itk::TimeVaryingVelocityFieldTransform} 
+      \item {\tt itk::TimeVaryingVelocityFieldTransformParametersAdaptor}
+      \item {\tt itk::TimeVaryingVelocityFieldImageRegistrationMethodv4}
+      \item {\tt itk::GaussianSmoothingOnUpdateTimeVaryingVelocityFieldTransform}
+      \item {\tt itk::TimeVaryingBSplineVelocityFieldTransform} 
+      \item {\tt itk::TimeVaryingBSplineVelocityFieldImageRegistrationMethodv4}
+      \item {\tt itk::TimeVaryingBSplineVelocityFieldTransformParametersAdaptor}
+    \end{itemize}  
+  \item {\bf DARTEL:}
+    \begin{itemize}
+       \item{\tt itk::ConstantVelocityFieldTransform}
+       \item{\tt itk::ConstantVelocityFieldTransformParametersAdaptor}
+      \item {\tt itk::GaussianExponentialDiffeomorphicTransform} 
+      \item {\tt itk::GaussianExponentialDiffeomorphicTransformParametersAdaptor}
+      \item {\tt itk::BSplineExponentialDiffeomorphicTransform} 
+      \item {\tt itk::BSplineExponentialDiffeomorphicTransformParametersAdaptor}
+    \end{itemize}  
+  \item {\bf SyN:}
+    \begin{itemize}
+      \item {\tt itk::SyNImageRegistrationMethod} 
+      \item {\tt itk::BSplineSyNImageRegistrationMethod} 
+    \end{itemize}  
+\end{itemize}
+These and other classes (e.g. similarity metrics, optimization methods, and
+utility classes) were developed as part of the ITKv4 registration
+framework refactoring.  Further details can be found in the documentation
+provided within the classes themselves.%
+\footnote{
+http://www.itk.org/Doxygen/html/classes.html
+}
+
+The class {\tt itk::BSplineScatteredDataPointSetToImageFilter} underlies all DMFFD regularization which implements the 
+methods described in \cite{tustison2009}.  Although applicable to
+various scenarios (e.g. curve and surface estimation), it has
+been optimized for imaging applications and multi-threaded
+for fast processing on multi-core machines.
+Additionally, numerical integration for solving Equations (\ref{eq:ode}) and (\ref{eq:integral}) utilizes Runge-Kutta which
+provides a more stable alternative than other
+methods \citep{press2007}.  Implementation is provided in the class {\tt itk::TimeVaryingVelocityFieldIntegrationImageFilter}.
+
+A complete packaging of these classes has been made
+available as part of our Advanced Normalization Tools (ANTs) toolkit.%
+\footnote{
+http://stnava.github.io/ANTs/
+}
+The \verb#antsRegistration# program%
+\footnote{
+The long command and short command line help menus can be invoked by
+the commands `{\tt antsRegistrationantsRegistration --help}' and `{\tt antsRegistration -h}', respectively.
+}
+takes advantage of the enhanced ITKv4
+registration framework and was developed by the 
+authors to provide a robust and versatile solution for a wide variety of
+image registration applications. The basic conceptualization for use is that one 
+can
+set-up any number of registration ``stages'' with each stage being 
+characterized by a specified transform.  For example, a representative 
+command call is as follows:
+\vspace{2mm}
+\lstset{frame = htb,
+        framerule = 0.25pt,
+        float,
+        fontadjust,
+        backgroundcolor={\color{listlightgray}},
+        basicstyle = {\ttfamily\scriptsize},
+        keywordstyle = {\ttfamily\color{listkeyword}\textbf},
+        identifierstyle = {\ttfamily},
+        commentstyle = {\ttfamily\color{listcomment}\textit},
+        stringstyle = {\ttfamily},
+        showstringspaces = false,
+        showtabs = false
+        numbers = none,
+        numbersep = 6pt,
+        numberstyle={\ttfamily\color{listnumbers}},
+        tabsize = 2,
+        language=bash,
+        floatplacement=!h,
+        caption={Representative script containing {\tt antsRegistration} and {\tt antsApplyTransforms} command calls used for evaluation},
+        captionpos=b,
+        label=listing:script
+        }
+\begin{lstlisting}
+# Register the $fixed and $moving images with initial
+# alignment of the centers of intensity followed by 
+# the following three stages:
+#   rigid -> affine -> B-spline SyN
+
+antsRegistration --dimensionality 3 \
+                 --output ${prefix} \
+                 --use-histogram-matching 1 \
+                 --initial-moving-transform [${fixed},${moving},1] \
+                 --transform Rigid[0.1] \
+                 --metric MI[${fixed},${moving},1,32,Regular,0.25] \ 
+                 --convergence 1000x500x250 \
+                 --smoothing-sigmas 2.0x1.0x0.0mm \
+                 --shrink-factors 4x3x2 \
+                 --transform Affine[0.1] \
+                 --metric MI[${fixed},${moving},1,32,Regular,0.25] \ 
+                 --convergence 1000x500x250 \
+                 --smoothing-sigmas 2.0x1.0x0.0mm \
+                 --shrink-factors 4x3x2 \
+                 --transform BSplineSyN[0.1,10x10x10,0x0x0,3] \
+                 --metric CC[${fixed},${moving},1,4] \ 
+                 --convergence 100x70x50x20 \
+                 --smoothing-sigmas 2x1.0x0.5x0.0mm \
+                 --shrink-factors 6x4x2x1
+
+# Apply the resulting transforms (generic affine + 
+# B-spline SyN) to the moving labels.
+                   
+antsApplyTransforms --dimensionality 3 \
+                    --input ${moving_labels} \
+                    --reference-image ${fixed} \
+                    --output ${moving_warped_labels} \
+                    --n NearestNeighbor \
+                    --transform ${prefix}1Warp.nii.gz \
+                    --transform ${prefix}0GenericAffine.mat \
+                    --default-value 0
+\end{lstlisting}
+In this example, we first calculate an initial translation transform by aligning
+the centers of (intensity) mass. The resulting transform is then used as input 
+for determining an optimal rigid transform.  Serial propagation of the resulting
+composite transform continues until all optimal transforms have been determined.
+Optimization for each stage is determined by the specified general parameters 
+including: smoothing and downsampling of fixed and moving images, convergence
+criteria (including number of iterations perl resolution level) and metric (or
+metrics).  Note that any pair of images can be specified per stage.  
+
+Although the
+resulting transforms for each stage can be written to disk as output, the 
+default output consists of a condensed set of transforms where compatible 
+transforms have been composed to a single transform.  For example, in the
+above command call, the initial translation, rigid, and affine transforms are
+combined into a single generic affine transform file with the results of the
+deformable transform consisting of discrete vector fields.  The output
+transform files can then be applied using the {\tt antsApplyTransforms}
+program which permits composition of any number of transform files with 
+various interpolation schemes.   For both programs interpolation is never
+performed more than once. 
+
 
 \subsection{Evaluation Data}
 
-We take inspiration from the well-known
-Klein comparative study in which 14 image registration
-algorithms were evaluated based on performance
-on publicly available labeled brain data \citep{klein2009}.
-Based on the final rankings, the SyN algorithm is one
-of the top-performing registration algorithms.  Its relative
-performance coupled with its public availability has made
-it a de facto standard for algorithmic comparison.
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.95\textwidth]{templates.pdf}
+  \caption{Canonical views for each of the five cohort-specific templates generated using
+  the ANTs tools as described
+  in \cite{avants2010}.   The pseudo-geodesic transform between subjects is created from 
+  the composition of transforms to/from the relevant template.
+  }
+  \label{fig:templates}
+\end{figure}
 
+In the well-known Klein comparative study \citep{klein2009}, 14 image registration
+algorithms were evaluated based on performance on publicly available labeled brain data.
+%Based on the final rankings, the SyN algorithm was determined to be one
+%of the top-performing deformable registration algorithms.  Its relative
+%performance coupled with its public availability has made
+%it a de facto standard for algorithmic comparison.
 For our evaluation, we used the same data as that in the
 Klein study.  Specifically, we used the data sets denoted as:
 \begin{itemize}
-  \item MGH10
+  \item MGH10 
   \item CUMC12
   \item IBSR18
   \item LPBA40
@@ -589,23 +731,81 @@ which are available for download from Arno Klein's website.%
 \footnote{
 http://mindboggle.info/papers/evaluation\_NeuroImage2009.php
 }
-We also use the labeled brain data provided at the
+The number of subjects per cohort is provided in the denotation.
+Further details of these labeled brain data (e.g. labeling protocol,
+data sources) are given in \citep{klein2009}.
+We also include the labeled brain data provided at the
 MICCAI 2012 Grand Challenge and Workshop on Multi-Atlas
 Labeling%
 \footnote{
 https://masi.vuse.vanderbilt.edu/workshop2012
-} which we denote as MICCAI35.  This T1-weighted
-MRI data set consists of 35 subject MRI taken from the
-Oasis database%
+} 
+which we denote as MAL35.  This T1-weighted
+MRI data set consists of 35 subject MRIs taken from the
+Oasis database.%
 \footnote{
 http://www.oasis-brains.org
-}.  The corresponding labels were provided by Neuromorphometrics,
+}  The corresponding labels were provided by Neuromorphometrics,
 Inc.%
 \footnote{
 http://Neuromorphometrics.com/
 }
 under academic subscription.
 
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.75\textwidth]{pseudo_geodesic.pdf}
+  \caption{Illustration of generating a pseudo-geodesic for any two subjects
+  within the MGH10 cohort.  Once the transforms between the
+  template and each subject are calculated, the mapping between any two
+  subjects is found by composition of forward and inverse transforms.  For
+  example, in the MGH data set, the pseudo-geodesic transform to
+  map Subject g4 to Subject g7 is found by composing the forward
+  transform from g4 to the template with the inverse transform from the
+  template to g7 (green dashed lines).
+  }
+  \label{fig:pseudo_geodesic}
+\end{figure}
+
+Comparative evaluation of the two SyN registration approaches was performed 
+within each cohort using a ``pseudo-geodesic'' approach.  Instead of
+registering every subject to every other subject within a data set,
+we generated the transforms from each subject to a cohort-specific
+shape/intensity template.  This was accomplished using the ANTs script {\tt antsMultivariateTemplateConstruction.sh}
+which is a multivariate implementation of the work described in
+\cite{avants2010}. Canonical views for each of the five templates
+used for this study are given in Figure \ref{fig:templates}.  
+Since calculation of the transform from each subject to the template also
+includes generation of the corresponding inverse transform, the total
+transformation from a given subject to any other is determined from the composition
+of transforms mapping through the template.  An example illustration of the
+geodesic approach is given in Figure \ref{fig:pseudo_geodesic}.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.95\textwidth]{labels.pdf}
+  \caption{Axial views of sample labelings for a member of each data set.  
+  The second row consists of the original labelings with the third row being
+  refined versions of those labelings using the MALF algorithm \cite{wang2012}.
+  These refinements provide more consistency between labelings and improved
+  comparative assessments between algorithms.
+  }
+  \label{fig:labels}
+\end{figure}
+
+Additionally, we refined the labelings for each subject of each cohort
+using the multi-atlas label fusion algorithm (MALF) developed by \cite{wang2012}
+which is also distributed with the ANTs repository.
+For a given subject within a data set, every other subject was mapped to 
+that subject using the pseudo-geodesic transform.  The set of transformed labelings 
+were then used to determine a consensus
+labeling for that subject.
+This was to minimize the obvious {\it observer dimensionality bias} where manual
+raters observe and label in a single dimension at a time.  This
+is most easily seen in the axial or sagittal views of the different cohorts 
+as labelings were done primarily in the coronal view (see Figure \ref{fig:labels}).  
+We include both sets of results.  This provides two sets of labels per subject
+for evaluation.
 
 
 
@@ -614,40 +814,191 @@ under academic subscription.
 
 \begin{figure}[htb]
   \centering
-  \includegraphics[width=0.95\textwidth]{allCUMC.pdf}
-  \caption{}
+  \begin{tabular}{ccccc}
+  {} &
+  \multicolumn{2}{c}{\bf Original labeling} & 
+  \multicolumn{2}{c}{\bf MALF labeling} \\
+  \rotatebox{90}{\qquad\,\, CUMC12} &
+  \includegraphics[height=38mm]{versusCUMC.png} &
+  \includegraphics[height=38mm]{synComparisonCUMC.pdf} &
+  \includegraphics[height=38mm]{versusCUMCMALF.png} &
+  \includegraphics[height=38mm]{synComparisonCUMCMALF.pdf} \\
+  \rotatebox{90}{\qquad\quad IBSR18} &
+  \includegraphics[height=38mm]{versusIBSR.png} &
+  \includegraphics[height=38mm]{synComparisonIBSR.pdf} &
+  \includegraphics[height=38mm]{versusIBSRMALF.png} &
+  \includegraphics[height=38mm]{synComparisonIBSRMALF.pdf} \\
+  \rotatebox{90}{\qquad\quad LPBA40} &
+  \includegraphics[height=38mm]{versusLPBA.png} &
+  \includegraphics[height=38mm]{synComparisonLPBA.pdf} &
+  \includegraphics[height=38mm]{versusLPBAMALF.png} &
+  \includegraphics[height=38mm]{synComparisonLPBAMALF.pdf} \\
+  \rotatebox{90}{\qquad\quad MGH10} &
+  \includegraphics[height=38mm]{versusMGH.png} &
+  \includegraphics[height=38mm]{synComparisonMGH.pdf} &
+  \includegraphics[height=38mm]{versusMGHMALF.png} &
+  \includegraphics[height=38mm]{synComparisonMGHMALF.pdf} \\
+  \rotatebox{90}{\qquad\quad MAL35} &
+  \includegraphics[height=38mm]{versusMAL.png} &
+  \includegraphics[height=38mm]{synComparisonMAL.pdf} &
+  \includegraphics[height=38mm]{versusMALMALF.png} &
+  \includegraphics[height=38mm]{synComparisonMALMALF.pdf} \\
+  \end{tabular}
+  \caption{Dice results for both algorithms for 
+  each subject warped to every other subject using the pseudo-
+  geodesic transform.  Each 
+  row corresponds to one of the five data sets used for evaluation.
+  For each data set we include a plotting of all individual label 
+  Dice results by volume and a combined label box plotting.  The
+  left and right halves show the results for MALF-derived and 
+  original labelings, respectively.
+  }
+  \label{fig:dice}
 \end{figure}
+
+As mentioned previously, a template was constructed for each data
+set (cf Figure \ref{fig:templates}) from all cohort images.  Subsequently, 
+each image was registered to its corresponding template using either 
+SyN or B-spline SyN as described previously (prior linear registration 
+stages were identical between the two algorithms).  Note that parameter
+exploration is not a part of this work.  Rather, we rely on previously
+reported research \citep{klein2009,avants2011} and our own experience as
+authors/developers of the algorithm/software to select parameters which 
+demonstrate robust performance across data sets.  For both algorithms,
+the gradient step was 0.1 during each of the four multi-resolution levels
+with shrink factors of $\{6,4,2,1\}$ with Gaussian smoothing for each
+of those levels being $\mathcal{N}\left(0,\{9,4,1,0\}\right)$ in terms
+of voxels.  The number of iterations per level were $\{100,100,70,20\}$
+with a convergence threshold of $10^{-9}$ and window size of 15 iterations.
+
+All processing was performed using the computational cluster at the 
+University of Virginia.%
+\footnote{
+http://www.uvacse.virginia.edu
+}
+All perl scripts used to create the jobs for the cluster are
+included in the github account associated with this evaluation.  
+It should be noted that for the
+data sets used in this study, times for B-spline SyN are approximately 
+15-40\% greater than Gaussian-based SyN (single-threaded).
+
+The differences between the two algorithms consist of the Gaussian and 
+B-spline parameters governing the update field smoothing, $S_v$.  In our 
+experience, smoothing of the total field did not improve the results, at
+least for these data (which conforms with our experience extended to other
+data), so the total field smoothing, $S_{\phi}$ is 0 for
+both registration approaches.  Specifically, the chosen parameters
+for the SyN algorithm were:  $S_{\phi} = \mathcal{N}(0,0)$ and 
+$S_{v} = \mathcal{N}(0,3)$ in voxel terms.%
+\footnote{
+ Or, in equivalent {\tt antsRegistration} command line parlance, {\tt -t
+ SyN[0.1,3,0]}.
+ }.  Although our experience with B-spline SyN is much more limited, we 
+were able to choose comparable parameters based on a knot spacing
+for the update field of 26 mm at the base level which is reduced by
+a factor of two for each subsequent multiresolution level.  This 
+yields a final knot spacing of 3.25 mm.%
+\footnote{
+ It should be noted that the current {\tt antsRegistration} command line currently 
+ permits specification of the
+ B-spline total and update field smoothing in terms of total mesh size over
+ the entire image domain, i.e. {\tt -t BSplineSyN[0.1,10x10x8,0]}.  However, 
+ in order to minimize anisotropic smoothing, we determined for each subject 
+ the mesh size closest to producing a knot spacing of 26 mm which was typically
+ around 10 mesh elements per dimension.  We are currently planning on modifying
+ the command line to permit specification of a knot size (similar to the 
+ ANTs-based N4 bias correction algorithm \citep{tustison2010} which also uses the
+ same underlying B-spline computational machinery).
+ }
+As specified in the supplementary material associated with \cite{klein2009}, 
+this is similar to the 
+gradient smoothing parameter for the IRTK FFD algorithm
+which also used four multi-resolution levels with an initial knot spacing of
+20 mm for a final knot spacing of 2.5 mm.  
+
+Quality of overlap  using the 
+Dice similarity metric 
+was determined from the transformed labels
+using the open source ITK
+implementation described in \cite{tustison2009a}.
+Both the original labels and MALF labels were warped
+to the fixed image for comparison using nearest neighbor
+interpolation.  A joint Dice metric value was calculated
+from the combined labels for each cohort for each of the
+two SyN methods.  These values are rendered in notched
+box plot format in Figure \ref{fig:dice}.  Non-overlapping notches
+indicate approximately statistically significantly different median values
+at the 95\% confidence level \citep{mcgill1978}.
+For all data sets, the B-spline SyN variant showed a small but statistically
+significant improvement in overall Dice values.
+In order to provide a more complete picture of performance differences,
+we also accounted for label volumetric considerations \cite{rohlfing2012}.  In Figure
+\ref{fig:dice} we plotted the Dice value difference between each
+SyN variant (B-spline SyN - SyN) for each label of each intra-subject
+registration pair within a data set versus the volume of the label
+in the fixed image.  
 
 \begin{figure}[htb]
   \centering
-  \includegraphics[width=0.95\textwidth]{allIBSR.pdf}
-  \caption{Currently redoing on the cluster.}
+    \includegraphics[width=0.95\textwidth]{jacobianRange.pdf}
+  \caption{Violin plots of the range of log Jacobian values 
+           (95th\% - the 5th\%)  
+           for all deformable
+           transforms from each subject to its corresponding
+           template.  B-spline SyN demonstrates a tendency 
+           to produce a much
+           greater range of log Jacobian values.
+           }
+  \label{fig:jacobian}
 \end{figure}
 
-\begin{figure}[htb]
-  \centering
-  \includegraphics[width=0.95\textwidth]{allLPBA.pdf}
-  \caption{}
-\end{figure}
-
-\begin{figure}[htb]
-  \centering
-  \includegraphics[width=0.95\textwidth]{allMGH.pdf}
-  \caption{Currently redoing on the cluster.}
-\end{figure}
-
-\begin{figure}[htb]
-  \centering
-  \includegraphics[width=0.95\textwidth]{allMICCAI.pdf}
-  \caption{}
-\end{figure}
-
-
+To further characterize the deformable transform differences, we 
+calculated the log of the Jacobian of the transformations from 
+each subject to the template and 
+tabulated statistical information within the brain region only. 
+A noticeable difference between the two algorithms was the
+respective range of values in log Jacobians.  We plotted the 
+(95th\% - the 5th\%) for each algorithm across all data sets
+ in Figure \ref{fig:jacobian}.  It is apparent 
+that B-spline SyN produces a much greater range of log Jacobian
+values during the course of optimization.
 
 \section{Discussion and Conclusions}
 %This should explore the significance of the results of the work, not repeat them. A combined Results and Discussion section is often appropriate. Avoid extensive citations and discussion of published literature.
 
-B-spline regularization is easily adapted into the diffeomorphic registration framework and performs comparably to analogous algorithms which we demonstrated in the case of SyN.  Even more importantly, all source code and data used in this work is publicly available for the interested researcher to explore.
+A significant amount of research has been devoted to image registration
+algorithmic development.  Given their many salient characteristics particularly with
+respect to large deformation estimation constrained by topological 
+continuity, diffeomorphic registration
+approaches have been a particular focus in the neuroimaging community.
+However, many groups continue to find success with non-diffeomorphic
+FFD methods
+\citep[e.g.][]{rueckert1999,klein2010}.  Using our DMFFD framework, 
+B-spline regularization is easily adapted into the diffeomorphic registration 
+framework and performs comparably to analogous algorithms which we demonstrated 
+in this work for the case of the widely-used SyN.
+
+B-spline SyN produced slightly greater Dice values than the original SyN.
+Interestingly it was shown that the range of log Jacobian values tend to be
+significantly higher for the former than the latter.  Although possible 
+explanations include the approximation-versus-convolution distinction mentioned
+earlier, further exploration is planned.  
+
+
+One of the advantages that has not been explored in this manuscript is 
+the use of B-spline SyN for small deformation estimation problems such 
+as in pulmonary or cardiac applications.  Such problems typically require
+greater regularization which implies larger discrete Gaussian kernels.
+A related issue is applications involving severely anisotropic data where
+the continuous nature of the DMFFD approach might help over Gaussian convolution.
+Ongoing work will continue to explore these issues.
+
+% What about sparsely sampled data and the advantages of b-splines
+
+Perhaps most important, in the spirt of open science, all source code
+used in this work is publicly available and well-vetted as part of the 
+ANTs initiative.  
+
 
 %\section{Conclusions}
 %The main conclusions of the study may be presented in a short Conclusions section, which may stand alone or form a subsection of a Discussion or Results and Discussion section.
