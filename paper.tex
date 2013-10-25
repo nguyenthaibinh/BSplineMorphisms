@@ -419,7 +419,7 @@ Figure \ref{fig:syn}.
 
 \begin{figure}[htb]
   \centering
-  \includegraphics[width=0.95\textwidth]{SyN.pdf}
+  \includegraphics[width=0.95\textwidth]{SyN.jpg}
   \caption{Illustration of the greedy SyN formulation.  Given images
   $I_A$ and $I_B$, the symmetric set-up requires finding the two
   transform pairs $\left(\phi_1,\phi_1^{-1}\right)$
@@ -706,7 +706,7 @@ performed more than once.
 
 \begin{figure}[htb]
   \centering
-  \includegraphics[width=0.95\textwidth]{templates.pdf}
+  \includegraphics[width=0.95\textwidth]{templates.jpg}
   \caption{Canonical views for each of the five cohort-specific templates generated using
   the ANTs tools as described
   in \cite{avants2010}.   The pseudo-geodesic transform between subjects is created from 
@@ -756,7 +756,7 @@ under academic subscription.
 
 \begin{figure}[htb]
   \centering
-  \includegraphics[width=0.75\textwidth]{pseudo_geodesic.pdf}
+  \includegraphics[width=0.75\textwidth]{pseudo_geodesic.jpg}
   \caption{Illustration of generating a pseudo-geodesic for any two subjects
   within the MGH10 cohort.  Once the transforms between the
   template and each subject are calculated, the mapping between any two
@@ -785,7 +785,7 @@ geodesic approach is given in Figure \ref{fig:pseudo_geodesic}.
 
 \begin{figure}[htb]
   \centering
-  \includegraphics[width=0.95\textwidth]{labels.pdf}
+  \includegraphics[width=0.95\textwidth]{labels.jpg}
   \caption{Axial views of sample labelings for a member of each data set.  
   The second row consists of the original labelings with the third row being
   refined versions of those labelings using the MALF algorithm \cite{wang2012}.
@@ -816,47 +816,55 @@ for evaluation.
 
 \begin{figure}[htb]
   \centering
-  \begin{tabular}{ccccc}
-  {} &
-  \multicolumn{2}{c}{\bf Original labeling} & 
-  \multicolumn{2}{c}{\bf MALF labeling} \\
-  \rotatebox{90}{\qquad\,\, CUMC12} &
-  \includegraphics[height=38mm]{versusCUMC.png} &
-  \includegraphics[height=38mm]{synComparisonCUMC.pdf} &
-  \includegraphics[height=38mm]{versusCUMCMALF.png} &
-  \includegraphics[height=38mm]{synComparisonCUMCMALF.pdf} \\
-  \rotatebox{90}{\qquad\quad IBSR18} &
-  \includegraphics[height=38mm]{versusIBSR.png} &
-  \includegraphics[height=38mm]{synComparisonIBSR.pdf} &
-  \includegraphics[height=38mm]{versusIBSRMALF.png} &
-  \includegraphics[height=38mm]{synComparisonIBSRMALF.pdf} \\
-  \rotatebox{90}{\qquad\quad LPBA40} &
-  \includegraphics[height=38mm]{versusLPBA.png} &
-  \includegraphics[height=38mm]{synComparisonLPBA.pdf} &
-  \includegraphics[height=38mm]{versusLPBAMALF.png} &
-  \includegraphics[height=38mm]{synComparisonLPBAMALF.pdf} \\
-  \rotatebox{90}{\qquad\quad MGH10} &
-  \includegraphics[height=38mm]{versusMGH.png} &
-  \includegraphics[height=38mm]{synComparisonMGH.pdf} &
-  \includegraphics[height=38mm]{versusMGHMALF.png} &
-  \includegraphics[height=38mm]{synComparisonMGHMALF.pdf} \\
-  \rotatebox{90}{\qquad\quad MAL35} &
-  \includegraphics[height=38mm]{versusMAL.png} &
-  \includegraphics[height=38mm]{synComparisonMAL.pdf} &
-  \includegraphics[height=38mm]{versusMALMALF.png} &
-  \includegraphics[height=38mm]{synComparisonMALMALF.pdf} \\
+  \begin{tabular}{c}
+  \includegraphics[width=0.95\textwidth]{evaluation.jpg}
   \end{tabular}
-  \caption{Dice results for both algorithms for 
-  each subject warped to every other subject using the pseudo-
-  geodesic transform.  Each 
-  row corresponds to one of the five data sets used for evaluation.
-  For each data set we include a plotting of all individual label 
-  Dice results by volume and a combined label box plotting.  The
-  left and right halves show the results for MALF-derived and 
-  original labelings, respectively.
-  }
-  \label{fig:dice}
-\end{figure}
+\end{figure}  
+
+
+%\begin{figure}[htb]
+%  \centering
+%  \begin{tabular}{ccccc}
+%  {} &
+%  \multicolumn{2}{c}{\bf Original labeling} & 
+%  \multicolumn{2}{c}{\bf MALF labeling} \\
+%  \rotatebox{90}{\qquad\,\, CUMC12} &
+%  \includegraphics[height=38mm]{versusCUMC.png} &
+%  \includegraphics[height=38mm]{synComparisonCUMC.pdf} &
+%  \includegraphics[height=38mm]{versusCUMCMALF.png} &
+%  \includegraphics[height=38mm]{synComparisonCUMCMALF.pdf} \\
+%  \rotatebox{90}{\qquad\quad IBSR18} &
+%  \includegraphics[height=38mm]{versusIBSR.png} &
+%  \includegraphics[height=38mm]{synComparisonIBSR.pdf} &
+%  \includegraphics[height=38mm]{versusIBSRMALF.png} &
+%  \includegraphics[height=38mm]{synComparisonIBSRMALF.pdf} \\
+%  \rotatebox{90}{\qquad\quad LPBA40} &
+%  \includegraphics[height=38mm]{versusLPBA.png} &
+%  \includegraphics[height=38mm]{synComparisonLPBA.pdf} &
+%  \includegraphics[height=38mm]{versusLPBAMALF.png} &
+%  \includegraphics[height=38mm]{synComparisonLPBAMALF.pdf} \\
+%  \rotatebox{90}{\qquad\quad MGH10} &
+%  \includegraphics[height=38mm]{versusMGH.png} &
+%  \includegraphics[height=38mm]{synComparisonMGH.pdf} &
+%  \includegraphics[height=38mm]{versusMGHMALF.png} &
+%  \includegraphics[height=38mm]{synComparisonMGHMALF.pdf} \\
+%  \rotatebox{90}{\qquad\quad MAL35} &
+%  \includegraphics[height=38mm]{versusMAL.png} &
+%  \includegraphics[height=38mm]{synComparisonMAL.pdf} &
+%  \includegraphics[height=38mm]{versusMALMALF.png} &
+%  \includegraphics[height=38mm]{synComparisonMALMALF.pdf} \\
+%  \end{tabular}
+%  \caption{Dice results for both algorithms for 
+%  each subject warped to every other subject using the pseudo-
+%  geodesic transform.  Each 
+%  row corresponds to one of the five data sets used for evaluation.
+%  For each data set we include a plotting of all individual label 
+%  Dice results by volume and a combined label box plotting.  The
+%  left and right halves show the results for MALF-derived and 
+%  original labelings, respectively.
+%  }
+%  \label{fig:dice}
+%\end{figure}
 
 As mentioned previously, a template was constructed for each data
 set (cf Figure \ref{fig:templates}) from all cohort images.  Subsequently, 
@@ -945,7 +953,7 @@ in the fixed image.
 
 \begin{figure}[htb]
   \centering
-    \includegraphics[width=0.95\textwidth]{jacobianRange.pdf}
+    \includegraphics[width=0.95\textwidth]{jacobianRange.jpg}
   \caption{Violin plots of the range of log Jacobian values 
            (95th\% - the 5th\%)  
            for all deformable
