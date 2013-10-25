@@ -662,7 +662,7 @@ antsRegistration --dimensionality 3 \
                  --convergence 1000x500x250 \
                  --smoothing-sigmas 2.0x1.0x0.0mm \
                  --shrink-factors 4x3x2 \
-                 --transform BSplineSyN[0.1,10x10x10,0x0x0,3] \
+                 --transform BSplineSyN[0.1,26,0x0x0,3] \
                  --metric CC[${fixed},${moving},1,4] \ 
                  --convergence 100x70x50x20 \
                  --smoothing-sigmas 2x1.0x0.5x0.0mm \
@@ -802,7 +802,7 @@ For a given subject within a data set, every other subject was mapped to
 that subject using the pseudo-geodesic transform.  The set of transformed labelings 
 were then used to determine a consensus
 labeling for that subject.
-This was to minimize the obvious {\it observer dimensionality bias} where manual
+This was to minimize the obvious {\it observer dimensionality artifacts} where manual
 raters observe and label in a single dimension at a time.  This
 is most easily seen in the axial or sagittal views of the different cohorts 
 as labelings were done primarily in the coronal view (see Figure \ref{fig:labels}).  
@@ -902,16 +902,18 @@ for the update field of 26 mm at the base level which is reduced by
 a factor of two for each subsequent multiresolution level.  This 
 yields a final knot spacing of 3.25 mm.%
 \footnote{
- The {\tt antsRegistration} command line currently 
- permits specification of the
- B-spline total and update field smoothing only in terms of total mesh size over
- the entire image domain, i.e. {\tt -t BSplineSyN[0.1,10x10x8,0]}.  However, 
- in order to minimize anisotropic smoothing, we determined for each subject 
- the mesh size closest to producing a knot spacing of 26 mm which was typically
- around 10 mesh elements per dimension.  We are currently planning on modifying
- the command line to permit specification of a knot size (similar to the 
- ANTs-based N4 bias correction algorithm \citep{tustison2010} which also uses the
- same underlying B-spline computational machinery).
+ Or, equivalently, {\tt -t
+ BSplineSyN[0.1,26,0]}.
+% The {\tt antsRegistration} command line currently 
+% permits specification of the
+% B-spline total and update field smoothing only in terms of total mesh size over
+% the entire image domain, i.e. {\tt -t BSplineSyN[0.1,10x10x8,0]}.  However, 
+% in order to minimize anisotropic smoothing, we determined for each subject 
+% the mesh size closest to producing a knot spacing of 26 mm which was typically
+% around 10 mesh elements per dimension.  We are currently planning on modifying
+% the command line to permit specification of a knot size (similar to the 
+% ANTs-based N4 bias correction algorithm \citep{tustison2010} which also uses the
+% same underlying B-spline computational machinery).
  }
 As specified in the supplementary material associated with \cite{klein2009}, 
 this is similar to the 
