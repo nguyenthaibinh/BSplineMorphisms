@@ -139,7 +139,7 @@ $^{2}$Penn Image Computing and Science Laboratory, University of Pennsylvania, D
 
 % \color{FrontiersColor} Is the color used in the Journal name, in the title, and the names of the sections
 
-
+%\selectlanguage{eng}
 \begin{document}
 \onecolumn
 \firstpage{1}
@@ -157,15 +157,23 @@ $^{2}$Penn Image Computing and Science Laboratory, University of Pennsylvania, D
 
 
 \begin{abstract}
-Important methodological developments in the evolution of image registration algorithms include those
-in which the correspondence relationship is characterized by diffeomorphisms.
-The  popularity of these approaches is due largely to their
+Diffeomorphic maps are central to image registration due largely to their
 topological properties and success in providing biologically plausible
 solutions to deformation and morphological
-estimation problems. Popular variants of diffeomorphic algorithms include those characterized by
+estimation problems. Popular diffeomorphic algorithms include those characterized by
 time-varying and constant velocity fields, and symmetrical considerations.
-Prior information in the form of regularization is used to enforce transform plausibility taking the form of physics-based constraints or through some approximation thereof, e.g. Gaussian smoothing of the vector fields (a la Thirion's Demons \citep{thirion1998}).  In the context of the original Demons' framework, the {\it directly manipulated free-form deformation} approach \citep{tustison2009}, can be viewed as a smoothing alternative in which explicit regularization is achieved through fast B-spline approximation.
-This characterization can be used to provide B-spline ``flavored'' diffeomorphic image registration solutions with several advantages.  Implementation is open source and available through the Insight Toolkit and our Advanced Normalization Tools (ANTs) repository.  A thorough comparative evaluation with the well-known SyN algorithm \citep{avants2008}, implemented within the same framework, and its B-spline analog is performed using open labeled brain data and open source evaluation tools.  
+Prior information in the form of regularization is used to enforce transform plausibility 
+taking the form of physics-based constraints or through some approximation thereof, e.g. 
+Gaussian smoothing of the vector fields (a la Thirion's Demons \citep{thirion1998}).  In 
+the context of the original Demons' framework, the so-called {\it directly manipulated free-form deformation} \citep{tustison2009}
+can be viewed as a smoothing alternative  in which explicit regularization is achieved through 
+fast B-spline approximation.
+This characterization can be used to provide B-spline ``flavored'' diffeomorphic image 
+registration solutions with several advantages.  Implementation 
+is open source and available through the Insight Toolkit and our Advanced Normalization Tools
+(ANTs) repository.  A thorough comparative evaluation with the well-known SyN algorithm 
+\citep{avants2008}, implemented within the same framework, and its B-spline analog is 
+performed using open labeled brain data and open source evaluation tools.
 \tiny
 \keyFont{ \section{Keywords:}
 Advanced Normalization Tools, diffeomorphisms, directly manipulated free-form deformation, Insight Toolkit, spatial normalization }
@@ -212,46 +220,57 @@ Advanced Normalization Tools, diffeomorphisms, directly manipulated free-form de
 \section{Introduction}
 %State the objectives of the work and provide an adequate background, avoiding a detailed literature survey or a summary of the results.
 
-Establishment of anatomical and functional correspondence
-is a crucial step towards gaining insight into certain biological
-sciences.  Neuroscience research efforts, such as characterizing
-brain morphology, require accurate and robust methods for
-producing such mappings.  The
-extensive literature detailing methodology is evidence of the rich history of
-algorithmic development which continues contemporaneously.
-We highlight several key historical contributions which are particularly relevant to the work 
-subsequently presented.
 
-Free-form deformation (FFD) image registration, characterized by  regularization based on the B-spline basis functions, has several
-advantages including algorithmic simplicity,
-good performance, desirable properties, and several available
-implementations.  Current research was
-preceded by related work for
-geometric modeling \citep{sederberg1986} and originated with such important
-contributions as \cite{szeliski1997,thevenaz1998,rueckert1999}.
-Continued development within this early spline-based paradigm produced additional innovations such as integrated similarity metrics \citep[e.g.][]{mattes2003}, additional transformation constraints \citep[e.g.][]{rohlfing2003}, and notable open source implementations \citep[e.g.][]{ibanez2005,klein2010,modat2010,shackleford2010}.
+Establishment of anatomical and functional correspondence is a crucial
+step towards gaining insight into biological processes.
+Neuroscience research efforts, such as characterizing brain
+morphology, require accurate and robust methods for producing such
+mappings.  The extensive literature detailing methodology is evidence
+of the rich history of algorithmic development which continues
+contemporaneously.  We highlight several key historical contributions
+which are particularly relevant to the work presented.
+
+Free-form deformation (FFD) image registration, characterized by
+regularization based on the B-spline basis functions, has several
+advantages including algorithmic simplicity, good performance,
+desirable properties, and several available implementations.  Current
+research was preceded by related work for geometric modeling
+\citep{sederberg1986} and originated with such important contributions
+as \cite{szeliski1997,thevenaz1998,rueckert1999}.  Continued
+development within this early spline-based paradigm produced
+additional innovations such as integrated similarity metrics
+\citep[e.g.][]{mattes2003}, additional transformation constraints
+\citep[e.g.][]{rohlfing2003}, and notable open source implementations
+\citep[e.g.][]{ibanez2005,klein2010,modat2010,shackleford2010}.
 
 Parallel to this branch of algorithmic progress are the informally
-denoted ``dense transforms''
-perhaps best exemplified by Thirion's seminal contribution \citep{thirion1998}.
-Relationships with earlier elastic \citep{bajcsy1989,gee1993} and fluid \citep{christensen1996} registration methods are detailed in
-the works of \cite{bro-nielsen1996} and \cite{pennec1999} who observe that
-smoothing via Gaussian convolution, a defining characteristic of Demons,
-of the update or total displacement
-field is a greedy approximation for solving the partial differential equations governing
-the physics of an elastic or fluid deformation, respectively.  However, the use of such
-approximations entails that physical properties, such as topological
-regularity, are no longer guaranteed.
+denoted ``dense transforms'' perhaps best exemplified by Thirion's
+seminal contribution \citep{thirion1998}.  Relationships with earlier
+elastic \citep{bajcsy1989,gee1993} and fluid \citep{christensen1996}
+registration methods are detailed in the works of
+\cite{bro-nielsen1996} and \cite{pennec1999} who observe that
+smoothing via Gaussian convolution, a defining characteristic of
+Demons, of the update or total displacement field is a greedy
+approximation for solving the partial differential equations governing
+the physics of an elastic or fluid deformation, respectively.
+However, the use of such approximations entails that physical
+properties, such as topological regularity, are no longer guaranteed.
 
-It is interesting to note that within this context, traditional FFD algorithms
-can be viewed as a type of fluid-like Demons approach
-where, rather than projecting the update field to the space
-of regularized fields using Gaussian convolution, gradient fields
-are projected to a smooth space characterized by the B-spline
-basis functions.  This analogy was hinted at in our earlier work \citep{tustison2009} where we showed that fitting the update field to a B-spline object using a fast approximation routine \citep{tustison2006} is equivalent to a preconditioning of the standard gradient used in gradient descent-based FFD optimization.
-This preconditioning is used to mitigate the hemstitching effect induced by the ill-conditioned nature of the traditional gradient-based FFD formulation.  We denote
-this new FFD variant as directly manipulated free-form deformation (DMFFD) and, 
-as part of the ITKv4 refactoring efforts, has been implemented for use with the new
+It is interesting to note that within this context, traditional FFD
+algorithms can be viewed as a type of fluid-like Demons approach
+where, rather than projecting the update field to the space of
+regularized fields using Gaussian convolution, gradient fields are
+projected to a smooth space characterized by the B-spline basis
+functions.  This analogy was hinted at in our earlier work
+\citep{tustison2009} where we showed that fitting the update field to
+a B-spline object using a fast approximation routine
+\citep{tustison2006} is equivalent to a preconditioning of the
+standard gradient used in gradient descent-based FFD optimization.
+This preconditioning is used to mitigate the hemstitching effect
+induced by the ill-conditioned nature of the traditional
+gradient-based FFD formulation.  We denoted this new FFD variant as
+directly manipulated free-form deformation (DMFFD) and, as part of the
+ITKv4 refactoring efforts, has been implemented for use with the new
 registration framework%
 \footnote{
 http://www.itk.org/Doxygen/html/classitk\_1\_1BSplineSmoothingOnUpdateDisplacementFieldTransform.html
@@ -263,13 +282,26 @@ analogous Gaussian, i.e. Demons, implementation%
 http://www.itk.org/Doxygen/html/classitk\_1\_1GaussianSmoothingOnUpdateDisplacementFieldTransform.html
 }).
 
-Continuing from the work of \cite{christensen1996} and subsequent exploration into the mathematical formalisms of diffeomorphisms \citep[e.g.][]{dupuis1998},
-the well-known Large Deformation Diffeomorphic Metric Mapping (LDDMM) algorithm
-was proposed in \cite{beg2005}.  In contrast to the mapping produced
-by \cite{christensen1996}, LDDMM yields the geodesic solution in the space of diffeomorphisms between two images. Since its introduction, LDDMM has
-inspired much innovation in the image registration community.  Applying
-the log-Euclidean framework of \cite{arsigny2006}, DARTEL (Diffeomorphic Anatomic Registration using Exponential Lie algebra) uses a constant velocity field parameterization to provide a fast, diffeomorphic alternative \citep{ashburner2007}. Additionally, symmetrical considerations in the velocity field parameterization are discussed in \cite{avants2008} in the context of a cross correlation similarity metric.
-By explicitly symmetrizing the LDDMM formulation, this Symmetric Normalization (SyN) minimizes the bias of the resulting transformation when selecting the ``fixed'' and ``moving'' images.  A greedy version of this algorithm has proven successful in neuroimaging \citep{klein2009} and pulmonary \citep{murphy2011} applications.
+Continuing from the work of \cite{christensen1996} and subsequent
+exploration into the mathematical formalisms of diffeomorphisms
+\citep[e.g.][]{dupuis1998}, the well-known Large Deformation
+Diffeomorphic Metric Mapping (LDDMM) algorithm was proposed in
+\cite{beg2005}.  In contrast to the mapping produced by
+\cite{christensen1996}, LDDMM yields the geodesic solution in the
+space of diffeomorphisms between two images. Since its introduction,
+LDDMM has inspired much innovation in the image registration
+literature.  Applying the log-Euclidean framework of
+\cite{arsigny2006}, DARTEL (Diffeomorphic Anatomic Registration using
+Exponential Lie algebra) uses a constant velocity field
+parameterization to provide a fast, diffeomorphic alternative
+\citep{ashburner2007}. Additionally, symmetrical considerations in the
+velocity field parameterization are discussed in \cite{avants2008} in
+the context of a cross correlation similarity metric.  By explicitly
+symmetrizing the LDDMM formulation, this Symmetric Normalization (SyN)
+minimizes the bias of the resulting transformation when selecting the
+``fixed'' and ``moving'' images.  A greedy version of this algorithm
+has proven successful in neuroimaging \citep{klein2009} and pulmonary
+\citep{murphy2011} applications as well as in multi-atlas label fusion \cite{wang2012}.
 
 
 
@@ -282,72 +314,67 @@ By explicitly symmetrizing the LDDMM formulation, this Symmetric Normalization (
 %flows to yield diffeomorphic transformations.
 
 
-Although many extensions of LDDMM rely
-on some form of Gaussian convolution for
-regularization \citep[e.g.][]{risser2011}, there has been significant interest in constraining
-FFD approaches to the space of diffeomorphisms.
-An early attempt reported in \cite{rueckert2006} enforced
-diffeomorphic transforms
-by concatenating multiple FFD transforms, each of which is constrained
-to describe a one-to-one mapping.
-\cite{modat2011} incorporated the log-Euclidean
-framework for enforcing diffeomorphic transformations and ensuring invertibility.  Similarly, the work of \cite{de-craene2011} provided
-a full LDDMM-style algorithm based on B-splines called
-{\it temporal free-form deformation} in which the
-time-varying velocity field
-is modeled using a 4-D B-spline object (3-D + time).  Numerical Eulerian integration of the mapping propagated within the velocity field yields the transform between parameterized time points.
+Although many extensions of LDDMM rely on some form of Gaussian
+convolution for regularization \citep[e.g.][]{risser2011}, there has
+been significant interest in constraining FFD approaches to the space
+of diffeomorphisms.  An early attempt reported in \cite{rueckert2006}
+enforced diffeomorphic transforms by concatenating multiple FFD
+transforms, each of which is constrained to describe a one-to-one
+mapping.  \cite{modat2011} incorporated the log-Euclidean framework
+for enforcing diffeomorphic transformations and ensuring
+invertibility.  Similarly, the work of \cite{de-craene2011} provided a
+full LDDMM-style algorithm based on B-splines called {\it temporal
+free-form deformation} in which the time-varying velocity field is
+modeled using a 4-D B-spline object (3-D + time).  Numerical Eulerian
+integration of the mapping propagated within the velocity field yields
+the transform between parameterized time points.
 
-As alluded to earlier, B-spline approximation can also be used
-for regularizing time-varying vector fields in an analogous fashion as
+As alluded to earlier, B-spline approximation can also be used for
+regularizing time-varying vector fields in an analogous fashion as
 Gaussian convolution.  In this vein, and similar to
 \cite{de-craene2011}, we reported in \cite{tustison2012a,tustison2012}
-the use of an $n$-D + time B-spline object to
-represent the characteristic velocity fields.  However, we use the
-directly manipulated free-form deformation formulation to improve the solution convergence.  This also facilitates modeling
-temporal periodicity and the enforcement of stationary boundaries.
-Both this work and our earlier work
-\citep{tustison2009} demonstrate that the DMFFD framework is potentially
-applicable to the
-entire gamut of diffeomorphic registration algorithms and provides
-unique ``flavors'' of smoothing possibilities.  However, 
-the two approaches produce characteristically different
-solutions.  In addition to
-smoothing kernel differences, Gaussian
-convolution tends to ``flatten'' the signal in contrast to an
-approximation or fitting of the signal provided by the DMFFD
-approach.  Also, whereas
-Gaussian convolution operates entirely within discretized space,
-the B-spline approximation routine constructs a continuous object prior
-to any voxelwise reconstruction of the sampled fields.  
-Interestingly, a similar comparison was made with respect to 
-Gaussian derivative estimation  \citep{bourma2007}.  Although 
-typically estimated using  truncated, discrete Gaussian 
-convolution, an alternative based on 
-B-spline approximation demonstrated superior performance with
-similar computational cost.  
+the use of an $n$-D + time B-spline object to represent the
+characteristic velocity fields.  However, we use the directly
+manipulated free-form deformation formulation to improve the solution
+convergence.  This also facilitates modeling temporal periodicity and
+the enforcement of stationary boundaries.  Both this work and our
+earlier work \citep{tustison2009} demonstrate that the DMFFD framework
+is potentially applicable to the entire gamut of diffeomorphic
+registration algorithms and provides unique ``flavors'' of smoothing
+possibilities.  However, the two approaches produce characteristically
+different solutions.  In addition to smoothing kernel differences,
+Gaussian convolution tends to ``flatten'' the signal in contrast to an
+approximation or fitting of the signal provided by the DMFFD approach.
+Also, whereas Gaussian convolution operates entirely within
+discretized space, the B-spline approximation routine constructs a
+continuous object prior to any voxelwise reconstruction of the sampled
+fields.  Interestingly, a similar comparison was made with respect to
+Gaussian derivative estimation \citep{bourma2007}.  Although typically
+estimated using truncated, discrete Gaussian convolution, an
+alternative based on B-spline approximation demonstrated superior
+performance with similar computational cost.
 %Further elaboration on these differences
 %are discussed in subsequent sections.
 
-Variants of three popular diffeomorphic algorithms and their DMFFD analogs
-(LDDMM,
-DARTEL,
- and SyN)
-were implemented by the authors
-as part of the recent refactoring of the open source
-Insight Toolkit (ITK) although related work had been
-previously implemented within the popular Advanced
-Normalization Tools (ANTs).%
+Variants of three popular diffeomorphic algorithms and their DMFFD
+analogs (LDDMM, DARTEL, and SyN) were implemented by the authors as
+part of the recent refactoring of the open source Insight Toolkit
+(ITK) although related work had been previously implemented within the
+popular Advanced Normalization Tools (ANTs).%
 \footnote{
 http://stnava.github.io/ANTs
 }
-Given the popularity and excellent performance of the greedy variant of SyN algorithm, our evaluation focus in this work is
-its B-spline analog which we denote as ``B-spline SyN'' or ``DMFFD SyN.''
-Evaluation and comparisons of the respective algorithmic instantiations
-are performed using the \verb#antsRegistration# program found
-in the ANTs repository (also originally developed by the authors).  This permits a direct algorithmic comparison
-as potential sources for implementation bias have been removed \citep{tustison2013}.  Additionally, in the spirit of open science,
-all text, figures, and
-scripts to reproduce the results contained in this work are publicly available online.%
+Given the popularity and excellent performance of the greedy variant
+of SyN, our evaluation focus in this work is its B-spline
+analog which we denote as ``B-spline SyN'' or ``DMFFD SyN.''
+Evaluations of the respective algorithmic
+instantiations are performed using the \verb#antsRegistration# program
+found in the ANTs repository (also originally developed by the
+authors).  This permits a direct algorithmic comparison as potential
+sources for implementation bias have been reduced
+\citep{tustison2013}.  Additionally, in the spirit of open science,
+all text, figures, and scripts to reproduce the results contained in
+this work are publicly available online.%
 \footnote{
 https://github.com/ntustison/BSplineMorphisms
 }
@@ -447,9 +474,9 @@ and storage of 4-D velocity fields at each iteration which is limiting for
 many common computational platforms.
 
 Therefore, in addition to the full-scale
-symmetric SyN offering described in \cite{avants2008}, the authors therein
+SyN offering described in \cite{avants2008}, the authors therein
 provided a ``greedy'' alternative which has demonstrated superior performance
-in various applications \citep{avants2011,klein2009,murphy2011}%
+in differents applications \citep{avants2011,klein2009,murphy2011}%
 \footnote{
 SyN was also the standard registration for the MICCAI 2013
 Workshop on Segmentation:  Algorithms Theory, and Applications (SATA)
@@ -462,7 +489,10 @@ endpoints, i.e. the $v_i(\mathbf{x},t)$ are sampled at $t \in \{0,0.5,1\}$
 implying simultaneous storage of only four transform vector fields
 $\phi_1(\mathbf{x})$,
 $\phi_1^{-1}(\mathbf{x})$, $\phi_2(\mathbf{x})$, and $\phi_2^{-1}(\mathbf{x})$
-(cf Figure \ref{fig:syn}).  Since the greedy SyN framework is the focus of the evaluation,
+(cf Figure \ref{fig:syn}).  Furthermore, the forward and inverse
+mappings are guaranteed to be consistent within the discrete domain i.e. $\|
+\phi_i^{-1}(\phi_i) - \mathbf{Id} \|^2 < \epsilon$.   
+Since the greedy SyN framework is the focus of the evaluation,
 the algorithmic steps are briefly sketched
 in Algorithm \ref{alg:syn}.
 
@@ -543,7 +573,7 @@ Additionally, in \cite{tustison2006} it was shown that one could associate each
 a sample, $\left( \frac{\partial \Pi}{\partial \mathbf{x}}\right)_c$ with a confidence
 weighting.  Thus, in order to enforce stationary boundaries for all described
 DMFFD-based diffeomorphic algorithms, we
-assign image boundary metric gradients a value of zero with a corresponding
+assign to the image boundary metric gradients the null vector with a corresponding
 large confidence value.
 }
 
@@ -990,20 +1020,20 @@ that B-spline SyN results exhibit a much greater range of deformation.
 \section{Discussion and Conclusions}
 %This should explore the significance of the results of the work, not repeat them. A combined Results and Discussion section is often appropriate. Avoid extensive citations and discussion of published literature.
 
-
-B-spline SyN produced slightly greater Dice values than the original SyN.  Although
-actual differences are relatively small, they are statistically significant. By 
-implementing both algorithms in the the same code base, we are not only able to 
-eliminate non-regularization components of the registration but we are also able
-to eliminate implementation differences.  Thus, performance disparity can be isolated
-to smoothing choice.  However, even with this restricted focus there are various
-reasons for the evaluation outcome.  These include the approximation-versus-convolution 
-distinction mentioned earlier for the two regularization approaches (which could
-also explain the reason why the range of log Jacobian values tend to be
-significantly higher for B-spline SyN).  Also, the fact that the regularization 
-for B-spline SyN is theoretically continuous whereas the truncated Gaussian 
-convolution is only a discrete approximation could be a potential factor.  Exploration
-of other possibilities are planned for future work.
+B-spline SyN produced slightly greater Dice values than the original SyN. 
+Although actual differences are relatively small, they are statistically 
+significant. By implementing both algorithms in the the same code base, 
+we are not only able to eliminate non-regularization components of the 
+registration but we are also able to eliminate implementation differences. 
+Thus, performance disparity can be isolated to smoothing choice. However, 
+even with this restricted focus there are various reasons for the evaluation 
+outcome. These include the approximation-versus-convolution distinction 
+mentioned earlier for the two regularization approaches (which could also 
+explain the reason why the range of log Jacobian values tend to be significantly 
+higher for B-spline SyN). Also, the fact that the regularization for 
+B-spline SyN is theoretically continuous whereas the truncated Gaussian 
+convolution is only a discrete approximation could be a potential factor. 
+Exploration of other possibilities are planned for future work.
 
 One of the advantages that has not been explored in this manuscript is 
 the use of B-spline SyN for small deformation estimation problems such 
@@ -1026,6 +1056,19 @@ FFD methods
 \citep[e.g.][]{rueckert1999,klein2010}.  Using our DMFFD framework, 
 B-spline regularization is easily adapted into the diffeomorphic registration 
 framework and performs well compared to analogous algorithms which we demonstrated 
+in this work for the case of the widely-used SyN.
+
+
+A significant amount of research has been devoted to image registration
+algorithmic development.  Given their many salient characteristics particularly with
+respect to large deformation estimation constrained by topological 
+continuity, diffeomorphic registration
+approaches have been a particular focus in the neuroimaging community.
+However, many groups continue to find success with non-diffeomorphic
+FFD methods
+\citep[e.g.][]{rueckert1999,klein2010}.  Using our DMFFD framework, 
+B-spline regularization is easily adapted into the diffeomorphic registration 
+framework and performs comparably to analogous algorithms which we demonstrated 
 in this work for the case of the widely-used SyN.
 
 
