@@ -157,10 +157,10 @@ $^{2}$Penn Image Computing and Science Laboratory, University of Pennsylvania, D
 
 
 \begin{abstract}
-Diffeomorphic maps are central to image registration due largely to their
+Diffeomorphic mappings are central to image registration due largely to their
 topological properties and success in providing biologically plausible
 solutions to deformation and morphological
-estimation problems. Popular diffeomorphic algorithms include those characterized by
+estimation problems. Popular diffeomorphic image registration algorithms include those characterized by
 time-varying and constant velocity fields, and symmetrical considerations.
 Prior information in the form of regularization is used to enforce transform plausibility 
 taking the form of physics-based constraints or through some approximation thereof, e.g. 
@@ -356,7 +356,7 @@ performance with similar computational cost.
 %Further elaboration on these differences
 %are discussed in subsequent sections.
 
-Variants of three popular diffeomorphic algorithms and their DMFFD
+Three popular diffeomorphic algorithms and their DMFFD
 analogs (LDDMM, DARTEL, and SyN) were implemented by the authors as
 part of the recent refactoring of the open source Insight Toolkit
 (ITK) although related work had been previously implemented within the
@@ -718,7 +718,7 @@ composite transform continues until all optimal transforms have been determined.
 Optimization for each stage is determined by the specified general parameters 
 including: smoothing and downsampling of fixed and moving images, convergence
 criteria (including number of iterations per resolution level) and metric (or
-metrics).  Note that any pair of images can be specified per metric per stage.  
+metrics).  Any pair of images can be specified per metric per stage.  
 
 Although the
 resulting transforms for each stage can be written to disk as output, the 
@@ -922,6 +922,8 @@ of those levels being $\mathcal{N}\left(0,\{9,4,1,0\}\right)$ in terms
 of voxels.  The number of iterations per level were $\{100,100,70,20\}$
 with a convergence threshold of $10^{-9}$ and window size of 15 iterations.
 
+
+
 All processing was performed using the computational cluster at the 
 University of Virginia.%
 \footnote{
@@ -929,7 +931,7 @@ http://www.uvacse.virginia.edu
 }
 The perl scripts used to create the jobs for the cluster are
 included in the github account associated with this evaluation.  
-It should be noted that for the
+For the
 data sets used in this study, times for B-spline SyN were approximately 
 15-40\% greater than Gaussian-based SyN using single-threading and a dense
 metric gradient sampling.
@@ -1033,9 +1035,33 @@ explain the reason why the range of log Jacobian values tend to be significantly
 higher for B-spline SyN). Also, the fact that the regularization for 
 B-spline SyN is theoretically continuous whereas the truncated Gaussian 
 convolution is only a discrete approximation could be a potential factor. 
-Exploration of other possibilities are planned for future work.
+%Exploration of other possibilities are planned for future work.
 
-One of the advantages that has not been explored in this manuscript is 
+Relative to Klein's study \citep{klein2009}, it should be noted that 
+the SyN implementation used in that study is found in the {\tt ANTS} 
+program which is a precursor of the {\tt antsRegistration} program
+described earlier.  Although the theoretical aspects 
+are the same, there are substantial implementation differences between 
+the two programs.  In addition, several parameters varied between the two
+studies which translated into a more aggressive metric and 
+gradient step in addition to fewer levels and iterations.%
+\footnote{
+Specifically, as provided in the supplementary material of \cite{klein2009},
+the command line parameters were:
+{\tt ANTS 3 -m PR[\$\{fixed\},\$\{moving\},1,2] -o \$\{output\} -r Gauss[2,0] 
+-t SyN[0.5] -i 30x99x11 --use-Histogram-Matching}.  
+}
+In this study we took a more conservative approach based on our 
+continued development and experience resulting in parameters which have proven
+useful in our cortical thickness pipeline (encapsulated in 
+the ANTs script {\tt antsCorticalThickness.sh}) and our
+experience with the MICCAI 2013 SATA challenge data.  We also 
+ran our own internal experiments with Gaussian SyN (both {\tt ANTS} and 
+{\tt antsRegistration}) using the same conservative parameters 
+on the MAL35 data for which the latter demonstrated slightly improved
+performance over the former.
+
+One of the advantages that has not been explored in this work is 
 the use of B-spline SyN for small deformation estimation problems such 
 as in pulmonary or cardiac applications.  Such problems typically require
 greater regularization which implies larger discrete kernels for 
@@ -1058,18 +1084,6 @@ B-spline regularization is easily adapted into the diffeomorphic registration
 framework and performs well compared to analogous algorithms which we demonstrated 
 in this work for the case of the widely-used SyN.
 
-
-A significant amount of research has been devoted to image registration
-algorithmic development.  Given their many salient characteristics particularly with
-respect to large deformation estimation constrained by topological 
-continuity, diffeomorphic registration
-approaches have been a particular focus in the neuroimaging community.
-However, many groups continue to find success with non-diffeomorphic
-FFD methods
-\citep[e.g.][]{rueckert1999,klein2010}.  Using our DMFFD framework, 
-B-spline regularization is easily adapted into the diffeomorphic registration 
-framework and performs comparably to analogous algorithms which we demonstrated 
-in this work for the case of the widely-used SyN.
 
 
 %Perhaps most important, in the spirt of open science, all source code
