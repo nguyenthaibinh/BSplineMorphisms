@@ -75,6 +75,9 @@ for( f in 1:length( logFiles ) )
   timeSyN <- convergenceTable$ELAPSED_TIME[convergenceTable$REGULARIZATION == 'syn'] / 3600
   timeBSplineSyN <- convergenceTable$ELAPSED_TIME[convergenceTable$REGULARIZATION == 'bsyn'] / 3600
 
+  cat( "  SyN time:  ", mean( timeSyN ), ' +/- ', sd( timeSyN ), "\n" );
+  cat( "  BSyN time:  ", mean( timeBSplineSyN ), ' +/- ', sd( timeBSplineSyN ), "\n" );
+
   plotLabels <- c( rep.int( "SyN", length( timeSyN ) ), rep.int( "BSplineSyN", length( timeBSplineSyN ) ) )
 
   timeData <- data.frame( Type = plotLabels, Time = c( timeSyN, timeBSplineSyN ) )
