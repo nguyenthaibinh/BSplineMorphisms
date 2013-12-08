@@ -233,7 +233,7 @@ which are particularly relevant to the work presented.
 Free-form deformation (FFD) image registration, characterized by
 regularization based on the B-spline basis functions, has several
 advantages including algorithmic simplicity, good performance, and
-{\color{blue} guaranteed parametric continuity}.  Current
+guaranteed parametric continuity.  Current
 research was preceded by related work for geometric modeling
 \citep{sederberg1986} and originated with such important contributions
 as \cite{szeliski1997,thevenaz1998,rueckert1999}.  Continued
@@ -270,11 +270,11 @@ This preconditioning is used to mitigate the hemstitching effect
 induced by the ill-conditioned nature of the traditional
 gradient-based FFD formulation.%
 \footnote{
-{\color{blue}{This phenomenon is explained in greater detail in \cite{tustison2009}
+This phenomenon is explained in greater detail in \cite{tustison2009}
 but, briefly, the distribution of the uniform B-spline basis functions
 spanning the image domain produces long ravines in the image registration
 energy topography.  These topographical features cause an
-inefficient back-and-forth traversal in classic steepest descent optimization, also known as ``hemstitching.''}}
+inefficient back-and-forth traversal in classic steepest descent optimization, also known as ``hemstitching.''
 }
 We denoted this new FFD variant as
 {\it directly manipulated free-form deformation} (DMFFD) and, as part of the
@@ -348,9 +348,9 @@ convergence.  This also facilitates modeling temporal periodicity and
 the enforcement of stationary boundaries.  Both this work and our
 earlier work \citep{tustison2009} demonstrate that the DMFFD framework
 is potentially applicable to the entire gamut of diffeomorphic
-registration algorithms and provides {\color{blue} alternative smoothing 
+registration algorithms and provides alternative smoothing 
 possibilities with different continuity properties (e.g. $C^2$
-versus $C^3$)}.  
+versus $C^3$).  
 
 However, the two approaches produce characteristically
 different solutions.  In addition to smoothing kernel differences,
@@ -562,7 +562,7 @@ we only specify a single spline order.
 and $\frac{\partial \Pi_\sim}{\partial \mathbf{x}}$ is the spatial 
 similarity metric gradient at voxel $c$.%
 \footnote{
-{\color{blue}{For comparison, FFD image registration uses the
+For comparison, FFD image registration uses the
 calculated gradient which, for a single control point is evaluated using (in 
 discretized form assuming no other explicit regularization):
 \begin{align}
@@ -591,8 +591,7 @@ A couple years later the second author (B.A.) requested an FFD implementation fo
 ANTs which N.T. naively assumed to be equivalent to applying \cite{tustison2006}
 to smoothing the metric gradient (a la Demons).  The subsequent realization 
 that this assumption was incorrect and figuring out why the algorithm still worked 
-despite it not being a correct FFD implementation resulted in \cite{tustison2009}.
-}}
+despite it not being a ``correct'' FFD implementation resulted in \cite{tustison2009}.
 }
 
 
@@ -665,7 +664,7 @@ Three diffeomorphic algorithms described previously utilizing Gaussian convoluti
 \end{itemize}
 These and other classes (e.g. similarity metrics, optimization methods, and
 utility classes) were developed as part of the ITKv4 registration
-framework refactoring.  {\color{blue}{Much of the original ITK image registration infrastructure 
+framework refactoring.  Much of the original ITK image registration infrastructure 
 was left intact including the so-called ``sparse'' transforms such as various
 rigid (versor, Euclidean) and other linear transforms.  The transform classes
 contributed by our group were, including those listed above, were meant to 
@@ -683,14 +682,13 @@ Some of the diffeomorphic approaches do not easily fit into this
 generalized optimization framework necessitating specialized method classes such as
 those listed above.  The adaptors%
 \footnote{
-{\color{blue}{We gratefully acknowledge Marius Staring's contribution in providing the broad
-design of the adaptors.}}
+We gratefully acknowledge Marius Staring's contribution in providing the broad
+design of the adaptors.
 }
 are used to modify the parameters between resolution levels during the course
 of transform optimization within the methods classes.  For example, the 
 resolution of the displacement field transforms follows that of the image 
 resolution and the updating is handled by the corresponding transform adaptors.
-}}
 Further details can be found in the documentation
 provided within the classes themselves.%
 \footnote{
@@ -759,18 +757,18 @@ antsRegistration --dimensionality 3 \
                  --initial-moving-transform [${fixed},${moving},1] \
                  --transform Rigid[0.1] \
                  --metric MI[${fixed},${moving},1,32,Regular,0.25] \ 
-                 --convergence 1000x500x250 \
-                 --smoothing-sigmas 2.0x1.0x0.0mm \
-                 --shrink-factors 4x3x2 \
+                 --convergence 1000x500x250x100 \
+                 --smoothing-sigmas 3x2x1x0 \
+                 --shrink-factors 8x4x2x1 \
                  --transform Affine[0.1] \
                  --metric MI[${fixed},${moving},1,32,Regular,0.25] \ 
-                 --convergence 1000x500x250 \
-                 --smoothing-sigmas 2.0x1.0x0.0mm \
-                 --shrink-factors 4x3x2 \
+                 --convergence 1000x500x250x100 \
+                 --smoothing-sigmas 3x2x1x0 \
+                 --shrink-factors 8x4x2x1 \
                  --transform BSplineSyN[0.1,26,0,3] \
                  --metric CC[${fixed},${moving},1,4] \ 
                  --convergence 100x70x50x20 \
-                 --smoothing-sigmas 2x1.0x0.5x0.0mm \
+                 --smoothing-sigmas 3x2x1x0 \
                  --shrink-factors 6x4x2x1
 
 # Apply the resulting transforms (generic affine + 
@@ -788,11 +786,10 @@ antsApplyTransforms --dimensionality 3 \
 In this example, we first calculate an initial translation transform by aligning
 the centers of (intensity) mass (although alignment based on other features is possible).%
 \footnote{
-{\color{blue}{This step corresponds to the {\tt --initial-moving-transform} option.  Generally, the
+This step corresponds to the {\tt --initial-moving-transform} option.  Generally, the
 user can specify an ITK transform for initialization or can perform an initial
 translation based on either the geometric center of the images, the center of the
 image intensities, or the origin of the images.  See the help menu `{\tt antsRegistration --help}' for more details.
-}}
 } 
 The resulting transform is then used as input 
 for determining an optimal rigid transform.  Serial propagation of the resulting
@@ -802,11 +799,8 @@ including: smoothing and downsampling of fixed and moving images, convergence
 criteria (including number of iterations per resolution level) and metric (or
 metrics).  Any pair of images can be specified per metric per stage.%
 \footnote{
-{
-\color{blue}{
 To help the reader who wishes to explore {\tt antsRegistration} with specific use of the
 parameters used for this study and specified above, we have created a script with a simplified interface and placed it in the {\tt Scripts/} subdirectory of the ANTs repository.  This script, called {\tt antsRegistrationSyN.sh} takes a fixed and moving image and performs a comprehensive (i.e. rigid $\rightarrow$ affine $\rightarrow$ deformable) registration using SyN (`{\tt -t s}') or B-spline SyN (`{\tt -t b}').
-}}
 }  
 
 Although the
@@ -855,7 +849,7 @@ http://mindboggle.info/papers/evaluation\_NeuroImage2009.php
 }
 
 The number of subjects per cohort is provided in the denotation.
-{\color{blue}{Table 1 summarizes core information about the data sets used.}}
+Table 1 summarizes core information about the data sets used.
 Further details of these first four labeled brain data (e.g. labeling protocol,
 data sources) are given in \citep{klein2009}.
 We also include the labeled brain data provided at the
@@ -878,7 +872,7 @@ under academic subscription.
 
 \begin{table*}[htb]
   \caption{
-    {\color{blue}{ Brief overview of the data sets used for the SyN vs. B-spline SyN comparison.}}
+    Brief overview of the data sets used for the SyN vs. B-spline SyN comparison.
     }
   \centering
   \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l c c  c l}
@@ -916,15 +910,13 @@ Comparative evaluation of the two SyN registration approaches was performed
 within each cohort using a ``pseudo-geodesic'' approach.  Instead of
 registering every subject to every other subject within a data set,
 we generated the transforms from each subject to a cohort-specific
-shape/intensity template.  {\color{blue}{Not only does this reduce the computational
+shape/intensity template.  Not only does this reduce the computational
 time required for finding the pairwise transforms between subjects but 
 prior work has demonstrated  improvement in registration with this approach\
 over direct pairwise registration \citep{klein2010a}.  Since the two algorithms
 have been implemented within the same framework, all registration parameters are 
 identical (i.e. linear registration stage parameters, winsorizing values, etc.) 
 except for the parameters governing the smoothing of the gradient field. 
-}}
-
 
 The cohort templates were built using the ANTs script {\tt antsMultivariateTemplateConstruction.sh}
 which is a multivariate implementation of the work described in
@@ -961,7 +953,7 @@ as labelings were done primarily in the coronal view (see Figure \ref{fig:labels
 We include both sets of results.  This provides two sets of labels per subject
 for evaluation.%
 \footnote{
-{\color{blue}{The MALF labels are available at http://figshare.com/account/projects/196.}}
+The MALF labels are available at http://figshare.com/account/projects/196.
 }
 
 
@@ -1048,35 +1040,30 @@ of those levels being $\mathcal{N}\left(0,\{9,4,1,0\}\right)$ in terms
 of voxels.  The number of iterations per level were $\{100,100,70,20\}$
 with a convergence threshold of $10^{-9}$ and window size of 15 iterations.%
 \footnote{
-{\color{blue}{
 As part of the ITKv4 refactoring, we developed several convergence
 monitoring classes (cf the base class {\tt itk::ConvergenceMonitoringFunction}).
 Instead of testing for convergence between two successive time points, we use a 
 windowed monitoring function which keeps track of a sequence, or window, of 
 energy values and determines the convergence from the slope of a line fitted to 
 the series.
-}}
 }
 
-{\color{blue}{
 All processing was performed using the linux cluster at the 
 University of Virginia%
 \footnote{
 http://www.uvacse.virginia.edu
 }
 using the PBS Pro queuing system for managing resources.
-}}
 The perl scripts used to create the jobs for the cluster are
 included in the github account associated with this evaluation.  
 For the data sets used in this study, times for B-spline SyN were approximately 
 15-40\% greater than Gaussian-based SyN using single-threading and a dense
 metric gradient sampling.  
-{\color{blue}{
 Timing data for specific data sets are given in Table \ref{table:timing}
 Timing includes both rigid and affine transform  optimizations.  
 \begin{table*}[htb]
   \caption{
-    {\color{blue}{Timing (in hours) per registration for both SyN algorithms across data sets.}}
+    Timing (in hours) per registration for both SyN algorithms across data sets.
     }
   \centering
   \begin{tabular*}{0.5\textwidth}{@{\extracolsep{\fill}} l c c}
@@ -1092,11 +1079,10 @@ Timing includes both rigid and affine transform  optimizations.
   \end{tabular*}
   \label{table:timing}
 \end{table*}
-}}
 
 
-The {\color{blue}{only}} difference between the two {\color{blue}{registration 
-settings}} consist of the Gaussian and 
+The only difference between the two registration 
+settings consists of the Gaussian and 
 B-spline parameters governing the update field smoothing, $S_v$.  
 In our 
 experience, smoothing of the total field did not improve the results, at
@@ -1179,7 +1165,6 @@ respective range of values in log Jacobians.  We plotted the
 (95th\% - 5th\%) for each algorithm across all data sets
  in Figure \ref{fig:jacobian}.  It is apparent 
 that B-spline SyN results exhibit a much greater range of deformation.
-{\color{blue}{
 Qualitative differences are shown in Figure \ref{fig:qualitative}.  In order to ensure
 randomness to minimize presentation bias in illustrating qualitative results 
 (and given the relative poor performance in humans as random number
@@ -1191,14 +1176,12 @@ are very similar which is to be expected considering the almost identical algori
 make-up between the two approaches (e.g. similarity metric, implementation, linear 
 transforms).  However, there are subtle differences particularly in the cortex which 
 help explain both the relative difference in Jacobian and Dice distribution.
-}}
 
 \begin{figure}[htb]
   \centering
     \includegraphics[width=0.95\textwidth]{qualitative.jpg}
   \caption{Randomly selected axial slices showing qualitative differences between
-  SyN and B-spline SyN.  Note that, at least for these slices, the cortical 
-  differences are the most prominent. 
+  SyN and B-spline SyN.  Crosshairs marks regions of maximal Jacobian difference. 
   }
   \label{fig:qualitative}
 \end{figure}
@@ -1220,7 +1203,6 @@ higher for B-spline SyN). Also, the fact that the regularization for
 B-spline SyN is theoretically continuous whereas the truncated Gaussian 
 convolution is only a discrete approximation could be a potential factor. 
 
-{\color{blue}{
 Additional observations of interest concern the differences in results
 between the MALF and original labelings for all data sets.  Not only was
 there an overall increase in performance for both algorithms with the 
@@ -1242,7 +1224,6 @@ a possible confound is that region definitions vary between cohorts.  Although
 we did not look at region versus performance difference variation within cohorts,
 such inquiry is certainly possible as we have made the resulting csv files
 available with the github repository associated with this work.
-}}
 
 %Exploration of other possibilities are planned for future work.
 
@@ -1265,12 +1246,11 @@ continued development and experience resulting in parameters which have proven
 useful in our cortical thickness pipeline (encapsulated in 
 the ANTs script {\tt antsCorticalThickness.sh}) and our
 experience with the MICCAI 2013 SATA challenge data.  We also 
-ran our own internal experiments with Gaussian SyN (both {\tt ANTS} and 
+ran our own internal experiments with Gaussian-based SyN (both {\tt ANTS} and 
 {\tt antsRegistration}) using the same conservative parameters 
 on the MAL35 data for which the latter demonstrated slightly improved
 performance over the former.  
 
-{\color{blue}{
 Despite the thorough evaluation with multiple data sets, we readily 
 acknowledge the limitations of this study including a very focused application,
 i.e. healthy brains of a single modality, and absence of a thorough 
@@ -1278,7 +1258,7 @@ exploration of parameter selection and sensitivity.  Although such
 work might be beneficial (e.g. by aiding other researchers in parameter
 selection), characterizing parameter permutations 
 of potential interest would expand the current work far beyond its 
-intended scope.  However, we note that in addition to this work,
+intended scope.  However, in addition to this work,
 SyN has also been previously evaluated in \cite{klein2009} and 
 \cite{avants2011} and, based on additional experience and application,
 the parameter set was modified each time but still yielded excellent
@@ -1290,7 +1270,6 @@ parameters even for a specific application is difficult.  In fact, the
 ``No Free Lunch Theorem'' \cite{wolpert1997} 
 emphasizes the importance of prior knowledge in tuning optimization 
 algorithms for a particular application.
-}}
 
 One of the advantages that has not been explored in this work is 
 the use of B-spline SyN for small deformation estimation problems such 
@@ -1299,7 +1278,7 @@ greater regularization which implies larger discrete kernels for
 Gaussian convolution.
 A related issue concerns applications involving severely anisotropic data where
 the continuous nature of the DMFFD approach might help over Gaussian 
-convolution.  {\color{blue}{Also, we emphasize that underlying the DMFFD approaches 
+convolution.  Also, we emphasize that underlying the DMFFD approaches 
 is a fitting routine for sparse and scattered data which offers added flexibility
 over smoothing using discrete convolution where
 the latter implies regularly placed  data on a rectilinear grid for conventional
@@ -1310,7 +1289,6 @@ involving data arranged continuously within a finite domain \cite[e.g.][]{tustis
 Finally, the possibility of varying data confidence values, as introduced in \cite{tustison2006} with DMFFD-based routines
 would permit incorporation of spatial preferential weighting (i.e. additional 
 prior knowledge) during optimization.
-}} 
 Ongoing work will continue to explore these issues.
 
 A significant amount of research has been devoted to image registration
