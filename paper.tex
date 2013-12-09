@@ -306,7 +306,7 @@ parameterization to provide a fast, diffeomorphic alternative
 velocity field parameterization are discussed in \cite{avants2008} in
 the context of a cross correlation similarity metric.  By explicitly
 symmetrizing the LDDMM formulation, this Symmetric Normalization (SyN)
-minimizes the bias of the resulting transformation when selecting the
+approach minimizes the bias of the resulting transformation when selecting the
 ``fixed'' and ``moving'' images.  A greedy version of this algorithm
 has proven successful in neuroimaging \citep{klein2009} and pulmonary
 \citep{murphy2011} applications as well as in multi-atlas label fusion \citep{wang2012}.
@@ -352,7 +352,8 @@ registration algorithms and provides alternative smoothing
 possibilities with different continuity properties (e.g. $C^2$
 versus $C^3$).  
 
-However, the two approaches produce characteristically
+The two regularization approaches (i.e. Gaussian convolution vs. DMFFD), 
+however,  produce characteristically
 different solutions.  In addition to smoothing kernel differences,
 Gaussian convolution tends to ``flatten'' the signal in contrast to an
 approximation or fitting of the signal provided by the DMFFD approach.
